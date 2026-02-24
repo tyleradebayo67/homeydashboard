@@ -1,1 +1,698 @@
-<h1>Homey Dashboard — coming soon</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Homey &mdash; Investment Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0f172a; --surface: #1e293b; --surface2: #263146; --border: #334155;
+  --text: #f1f5f9; --muted: #94a3b8; --accent: #6366f1;
+}
+body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 14px; line-height: 1.5; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+.header-left h1 { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.02em; }
+.header-left h1 span { color: var(--accent); }
+.header-meta { color: var(--muted); font-size: 0.8rem; margin-top: 2px; }
+.header-stats { display: flex; gap: 24px; flex-wrap: wrap; }
+.hstat { text-align: right; }
+.hstat-val { font-size: 1.2rem; font-weight: 700; }
+.hstat-label { color: var(--muted); font-size: 0.75rem; }
+
+.main { max-width: 1400px; margin: 0 auto; padding: 32px; }
+.section-title { font-size: 0.75rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.08em; margin: 32px 0 12px; }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; margin-bottom: 16px; }
+.card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 16px; padding-left: 12px; }
+.card-title { font-size: 1rem; font-weight: 600; margin-bottom: 2px; }
+.badge-group { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
+.badge { padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; color: #fff; white-space: nowrap; }
+
+/* Climate */
+.climate-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; padding-left: 12px; }
+.climate-tag { font-size: 0.72rem; font-weight: 600; border: 1px solid; border-radius: 8px; padding: 2px 8px; }
+
+/* STR box */
+.str-box { background: rgba(14,165,233,0.08); border: 1px solid rgba(14,165,233,0.3); border-radius: 10px; padding: 16px; margin-bottom: 20px; }
+.str-label { font-size: 0.8rem; font-weight: 700; color: #0ea5e9; margin-bottom: 12px; }
+.str-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 10px; }
+
+.table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); }
+table { width: 100%; border-collapse: collapse; background: var(--surface); }
+thead th { background: var(--surface2); color: var(--muted); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding: 10px 16px; text-align: left; white-space: nowrap; }
+tbody tr { border-top: 1px solid var(--border); transition: background 0.15s; }
+tbody tr:hover { background: var(--surface2); cursor: pointer; }
+td { padding: 12px 16px; vertical-align: middle; }
+td.num { font-variant-numeric: tabular-nums; }
+td.small { font-size: 0.75rem; color: var(--muted); }
+.prop-link { font-weight: 500; }
+.prop-meta { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
+
+.detail-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.stat-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+.stat-label { font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
+.stat-value { font-size: 1.1rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+
+.qualitative { background: var(--surface2); border-left: 3px solid var(--accent); padding: 12px 16px; border-radius: 0 8px 8px 0; font-size: 0.85rem; color: var(--muted); margin-bottom: 20px; line-height: 1.6; }
+
+.charts-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+.chart-wrap h4 { font-size: 0.8rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; }
+
+.detail-card { display: none; }
+.detail-card.visible { display: block; }
+.prop-row.selected { background: rgba(99,102,241,0.08) !important; }
+
+@media (max-width: 768px) {
+  .main { padding: 16px; }
+  .header { padding: 16px; }
+  .charts-row { grid-template-columns: 1fr; }
+  .badge-group { align-items: flex-start; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <h1>&#127968; <span>Homey</span> Investment Dashboard</h1>
+    <div class="header-meta">Updated February 23, 2026 at 08:44 PM &bull; 2 properties tracked</div>
+  </div>
+  <div class="header-stats">
+    <div class="hstat"><div class="hstat-val" id="stat-positive">0</div><div class="hstat-label">Cash Flow +</div></div>
+    <div class="hstat"><div class="hstat-val" id="stat-breakeven">0</div><div class="hstat-label">Near Break-even</div></div>
+    <div class="hstat"><div class="hstat-val" id="stat-negative">0</div><div class="hstat-label">Cash Flow −</div></div>
+    <div class="hstat"><div class="hstat-val">12/100</div><div class="hstat-label">Avg Deal Score</div></div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="section-title">Portfolio Overview</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Property</th><th>Price</th><th>Deal Score</th><th>Monthly Cost</th>
+          <th>Break-even Rent</th><th>Market Rent</th><th>Est. Cash Flow</th>
+          <th>Assessment</th><th>Updated</th>
+        </tr>
+      </thead>
+      <tbody id="prop-table-body">
+        <tr class="prop-row" data-slug="398-ne-5th-st-3811-miami">
+          <td>
+            <a href="https://www.redfin.com/FL/Miami/398-NE-5th-St-33132/unit-3811/home/185391166" target="_blank" class="prop-link">398 NE 5th St #3811, Miami, FL 33132</a>
+            <div class="prop-meta">Downtown Miami / Brickell &bull; Miami &bull; 818 sqft <span title="STR Eligible" style="color:#0ea5e9;font-size:0.75rem">🏖️ STR</span></div>
+            <div class="prop-meta" style="color:#f97316">⚠️ Major, Extreme, Extreme</div>
+          </td>
+          <td class="num">$1,385,000</td>
+          <td class="num"><span style="color:#ef4444;font-weight:700">0/100</span></td>
+          <td class="num">$11,541</td>
+          <td class="num">$12,148</td>
+          <td class="num">$3,962</td>
+          <td class="num"><span style="color:#ef4444;font-weight:700">-$7,579/mo</span></td>
+          <td><span class="badge" style="background:#ef4444">Cash Flow Negative</span></td>
+          <td class="num small">2026-02-22</td>
+        </tr>
+        <tr class="prop-row" data-slug="41-se-5th-st-1116-miami">
+          <td>
+            <a href="https://www.redfin.com/FL/Miami/41-SE-5th-St-33131/unit-1116/home/43398394" target="_blank" class="prop-link">41 SE 5th St #1116, Miami, FL 33131</a>
+            <div class="prop-meta">Brickell / Brickell on the River South &bull; Miami &bull; 1,289 sqft <span title="STR Eligible" style="color:#0ea5e9;font-size:0.75rem">🏖️ STR</span></div>
+            <div class="prop-meta" style="color:#f97316">⚠️ Extreme, Extreme</div>
+          </td>
+          <td class="num">$629,000</td>
+          <td class="num"><span style="color:#ef4444;font-weight:700">25/100</span></td>
+          <td class="num">$6,606</td>
+          <td class="num">$6,954</td>
+          <td class="num">$3,500</td>
+          <td class="num"><span style="color:#ef4444;font-weight:700">-$3,106/mo</span></td>
+          <td><span class="badge" style="background:#ef4444">Cash Flow Negative</span></td>
+          <td class="num small">2026-02-23</td>
+        </tr></tbody>
+    </table>
+  </div>
+
+  <div class="section-title">Property Detail</div>
+  <div id="detail-placeholder" class="card" style="text-align:center;padding:32px;color:#64748b">
+    Click a row above to see detailed investment analysis and charts.
+  </div>
+
+  
+  <div id="detail-cards-container">
+    
+<div class="card detail-card" id="card-398-ne-5th-st-3811-miami">
+  <div class="card-header" style="border-left:4px solid #ef4444">
+    <div>
+      <h3 class="card-title">398 NE 5th St #3811, Miami, FL 33132</h3>
+      <div class="prop-meta">Downtown Miami / Brickell &bull; Miami &bull; 2BR/2BA &bull; 818 sqft</div>
+    </div>
+    <div class="badge-group"><span class="badge" style="background:#ef4444">⭐ 0/100 — Weak Deal</span> <span class="badge" style="background:#ef4444">Cash Flow Negative</span></div>
+  </div>
+
+  <div class="climate-row"><span class="climate-tag" style="border-color:#f97316;color:#f97316">Flood: Major</span><span class="climate-tag" style="border-color:#ef4444;color:#ef4444">Wind: Extreme</span><span class="climate-tag" style="border-color:#ef4444;color:#ef4444">Heat: Extreme</span></div>
+
+  <div class="detail-grid">
+    <div class="stat-box"><div class="stat-label">Purchase Price</div><div class="stat-value">$1,385,000</div></div>
+    <div class="stat-box"><div class="stat-label">Down Payment</div><div class="stat-value">$277,000</div></div>
+    <div class="stat-box"><div class="stat-label">Loan Amount</div><div class="stat-value">$1,108,000</div></div>
+    <div class="stat-box"><div class="stat-label">Mortgage Rate</div><div class="stat-value">6.01%</div></div>
+    <div class="stat-box"><div class="stat-label">HOA ⚠️</div><div class="stat-value">$1,543/mo</div></div>
+    <div class="stat-box"><div class="stat-label">Total Monthly Cost</div><div class="stat-value">$11,541</div></div>
+    <div class="stat-box"><div class="stat-label">Break-even Rent</div><div class="stat-value">$12,148</div></div>
+    <div class="stat-box"><div class="stat-label">Avg Market Rent</div><div class="stat-value">$3,962</div></div>
+    <div class="stat-box" style="border-color:#ef4444"><div class="stat-label">Est. Cash Flow</div><div class="stat-value" style="color:#ef4444">-$7,579/mo</div></div>
+    
+    <div class="stat-box">
+      <div class="stat-label">Redfin Estimate</div>
+      <div class="stat-value">$1,314,716</div>
+      <div class="prop-meta" style="color:#ef4444">-5.1% vs list</div>
+    </div>
+  </div>
+
+  <p class='qualitative'>Pure appreciation play — break-even rent ($12,148) is 3x market rate ($3,962). HOA at $1,543/mo is a major red flag. Even STR at $220/night × 18 nights barely moves the needle (-$7,581/mo). Bull case: 2024 construction, bayfront views, STR flexibility, CA→Miami migration tailwind. Climate risks (Major flood, Extreme wind) add long-term insurance exposure — luxury bet only, zero yield.</p>
+  
+    <div class="str-box">
+      <div class="str-label">🏖️ STR Scenario (Short-Term Rental)</div>
+      <div class="str-grid">
+        <div><span class="stat-label">Avg Nightly Rate</span><div>$220/night</div></div>
+        <div><span class="stat-label">Assumed Nights/Mo</span><div>18</div></div>
+        <div><span class="stat-label">Est. Monthly Revenue</span><div>$3,960</div></div>
+        <div><span class="stat-label">STR Cash Flow</span><div style="color:#ef4444;font-weight:700">-$7,581/mo</div></div>
+      </div>
+    </div>
+
+  <div class="charts-row">
+    <div class="chart-wrap"><h4>Monthly Cost Breakdown</h4><canvas id="cost-398-ne-5th-st-3811-miami" height="220"></canvas></div>
+    <div class='chart-wrap'><h4>Deal Score Breakdown</h4><canvas id='score-398-ne-5th-st-3811-miami' height='220'></canvas></div>
+    
+    <div class='chart-wrap'><h4>Rental Comps vs Break-even</h4><canvas id='comps-398-ne-5th-st-3811-miami' height='220'></canvas></div>
+  </div>
+</div>
+
+<div class="card detail-card" id="card-41-se-5th-st-1116-miami">
+  <div class="card-header" style="border-left:4px solid #ef4444">
+    <div>
+      <h3 class="card-title">41 SE 5th St #1116, Miami, FL 33131</h3>
+      <div class="prop-meta">Brickell / Brickell on the River South &bull; Miami &bull; 2BR/2BA &bull; 1289 sqft</div>
+    </div>
+    <div class="badge-group"><span class="badge" style="background:#ef4444">⭐ 25/100 — Weak Deal</span> <span class="badge" style="background:#ef4444">Cash Flow Negative</span></div>
+  </div>
+
+  <div class="climate-row"><span class="climate-tag" style="border-color:#22c55e;color:#22c55e">Flood: Extreme (estimated — Brickell riverfront location)</span><span class="climate-tag" style="border-color:#ef4444;color:#ef4444">Wind: Extreme</span><span class="climate-tag" style="border-color:#ef4444;color:#ef4444">Heat: Extreme</span><span class="climate-tag" style="border-color:#22c55e;color:#22c55e">Note: Estimated based on Miami River location. Confirm via First Street data.</span></div>
+
+  <div class="detail-grid">
+    <div class="stat-box"><div class="stat-label">Purchase Price</div><div class="stat-value">$629,000</div></div>
+    <div class="stat-box"><div class="stat-label">Down Payment</div><div class="stat-value">$125,800</div></div>
+    <div class="stat-box"><div class="stat-label">Loan Amount</div><div class="stat-value">$503,200</div></div>
+    <div class="stat-box"><div class="stat-label">Mortgage Rate</div><div class="stat-value">6.38%</div></div>
+    <div class="stat-box"><div class="stat-label">HOA ⚠️</div><div class="stat-value">$1,445/mo</div></div>
+    <div class="stat-box"><div class="stat-label">Total Monthly Cost</div><div class="stat-value">$6,606</div></div>
+    <div class="stat-box"><div class="stat-label">Break-even Rent</div><div class="stat-value">$6,954</div></div>
+    <div class="stat-box"><div class="stat-label">Avg Market Rent</div><div class="stat-value">$3,500</div></div>
+    <div class="stat-box" style="border-color:#ef4444"><div class="stat-label">Est. Cash Flow</div><div class="stat-value" style="color:#ef4444">-$3,106/mo</div></div>
+    
+  </div>
+
+  <p class='qualitative'>WATCH-ONLY. The 19% price/sqft discount vs Brickell avg ($488 vs $603) is the sole deal signal — but everything else is a red flag. (1) HOA at $1,445/mo is a structural cash-flow killer. (2) The building's own rental history shows declining rents ($4,500→$3,500 in 6 months) — and even $3,500 failed to rent. (3) 20 units for sale in this 24-story building signals deep supply overhang. (4) Previously listed at $620K Jul-Oct 2025 without selling; current list is $10K higher — wrong direction. (5) Extreme climate risk on the Miami River (flood + wind). Break-even rent ($6,954) is 2x achievable market rent ($3,500). WATCH: flag for re-analysis if price drops to $490-500K range, where break-even improves dramatically.</p>
+  
+    <div class="str-box">
+      <div class="str-label">🏖️ STR Scenario (Short-Term Rental)</div>
+      <div class="str-grid">
+        <div><span class="stat-label">Avg Nightly Rate</span><div>$220/night</div></div>
+        <div><span class="stat-label">Assumed Nights/Mo</span><div>18</div></div>
+        <div><span class="stat-label">Est. Monthly Revenue</span><div>$3,960</div></div>
+        <div><span class="stat-label">STR Cash Flow</span><div style="color:#ef4444;font-weight:700">-$2,646/mo</div></div>
+      </div>
+    </div>
+
+  <div class="charts-row">
+    <div class="chart-wrap"><h4>Monthly Cost Breakdown</h4><canvas id="cost-41-se-5th-st-1116-miami" height="220"></canvas></div>
+    <div class='chart-wrap'><h4>Deal Score Breakdown</h4><canvas id='score-41-se-5th-st-1116-miami' height='220'></canvas></div>
+    
+    <div class='chart-wrap'><h4>Rental Comps vs Break-even</h4><canvas id='comps-41-se-5th-st-1116-miami' height='220'></canvas></div>
+  </div>
+</div>
+  </div>
+</div>
+
+<script>
+var PROPERTIES = [
+  {
+    "slug": "398-ne-5th-st-3811-miami",
+    "address": "398 NE 5th St #3811, Miami, FL 33132",
+    "url": "https://www.redfin.com/FL/Miami/398-NE-5th-St-33132/unit-3811/home/185391166",
+    "market": "Miami",
+    "neighborhood": "Downtown Miami / Brickell",
+    "state": "FL",
+    "bedrooms": 2,
+    "bathrooms": 2,
+    "sqft": 818,
+    "first_seen": "2026-02-22",
+    "last_updated": "2026-02-23",
+    "status": "active",
+    "deal_score": 0,
+    "price_history": [
+      {
+        "date": "2026-02-22",
+        "price": 1385000,
+        "note": "First seen \u2014 new listing (30hrs)"
+      }
+    ],
+    "listing_details": {
+      "hoa_monthly": 1543,
+      "hoa_flag": "HIGH \u2014 exceeds $1k/mo threshold",
+      "year_built": 2024,
+      "price_per_sqft": 1693,
+      "parking": "1 car garage",
+      "amenities": [
+        "pool",
+        "indoor pool",
+        "gym",
+        "city views",
+        "artful lobby",
+        "bayfront water views"
+      ],
+      "short_term_rental": true,
+      "redfin_estimate": 1314716,
+      "redfin_estimate_delta_pct": -5.1,
+      "redfin_rental_estimate": 2302,
+      "climate_risks": {
+        "flood": "Major",
+        "wind": "Extreme",
+        "heat": "Extreme"
+      },
+      "walk_score": 9.6,
+      "transit_score": 9.9
+    },
+    "investment_analysis": {
+      "last_updated": "2026-02-22",
+      "config_snapshot": {
+        "down_payment_pct": 20,
+        "loan_term_years": 30,
+        "mortgage_rate_pct": 6.01
+      },
+      "purchase_price": 1385000,
+      "down_payment": 277000,
+      "loan_amount": 1108000,
+      "monthly_costs": {
+        "mortgage_pi": 6650,
+        "property_tax": 1994,
+        "hoa": 1543,
+        "insurance": 854,
+        "maintenance_reserve": 300,
+        "capex": 200,
+        "property_management": 0
+      },
+      "total_monthly_cost": 11541,
+      "break_even_rent_gross": 11541,
+      "break_even_rent_vacancy_adjusted": 12148,
+      "rental_comps": [
+        {
+          "source": "Apartments.com aggregate",
+          "address": "Brickell/Downtown Miami 2BR market avg",
+          "rent": 3962,
+          "sqft": null,
+          "url": "https://www.apartments.com/brickell-miami-fl/2-bedrooms/",
+          "note": "Market avg \u2014 need individual listing comps for precision"
+        }
+      ],
+      "avg_market_rent": 3962,
+      "monthly_cash_flow_estimate": -7579,
+      "cash_flow_assessment": "cash-flow negative",
+      "str_analysis": {
+        "eligible": true,
+        "assumed_nightly_rate": 220,
+        "assumed_nights_per_month": 18,
+        "estimated_monthly_revenue": 3960,
+        "estimated_monthly_cash_flow": -7581
+      },
+      "deal_score_breakdown": {
+        "price_drop": 0,
+        "price_per_sqft_vs_neighborhood": 0,
+        "cash_flow_tier": 0,
+        "hoa_level": 0,
+        "climate_risk": 0,
+        "redfin_estimate_delta": 0,
+        "total": 0,
+        "notes": "Listed 5.1% ABOVE Redfin estimate (negative signal). No price drop. Deeply cash-flow negative. HOA >$1k. Major flood + Extreme wind + heat risk. Zero yield merit."
+      },
+      "qualitative_notes": "Pure appreciation play \u2014 break-even rent ($12,148) is 3x market rate ($3,962). HOA at $1,543/mo is a major red flag. Even STR at $220/night \u00d7 18 nights barely moves the needle (-$7,581/mo). Bull case: 2024 construction, bayfront views, STR flexibility, CA\u2192Miami migration tailwind. Climate risks (Major flood, Extreme wind) add long-term insurance exposure \u2014 luxury bet only, zero yield."
+    }
+  },
+  {
+    "slug": "41-se-5th-st-1116-miami",
+    "address": "41 SE 5th St #1116, Miami, FL 33131",
+    "url": "https://www.redfin.com/FL/Miami/41-SE-5th-St-33131/unit-1116/home/43398394",
+    "market": "Miami",
+    "neighborhood": "Brickell / Brickell on the River South",
+    "state": "FL",
+    "bedrooms": 2,
+    "bathrooms": 2,
+    "sqft": 1289,
+    "first_seen": "2026-02-23",
+    "last_updated": "2026-02-23",
+    "status": "active",
+    "deal_score": 25,
+    "price_history": [
+      {
+        "date": "2026-02-23",
+        "price": 629000,
+        "note": "First seen \u2014 2 days on market (listed Feb 19, 2026). NOTE: Previously listed Jul-Oct 2025 at $618,950-620,000 without selling. Current list is $10k higher than last attempt."
+      }
+    ],
+    "listing_details": {
+      "hoa_monthly": 1445,
+      "hoa_flag": "HIGH \u2014 exceeds $1k/mo threshold",
+      "year_built": 2006,
+      "price_per_sqft": 488,
+      "neighborhood_avg_ppsf": 603,
+      "ppsf_vs_neighborhood_pct": -19.1,
+      "parking": "1 car garage",
+      "amenities": [
+        "pool",
+        "sauna",
+        "gym/fitness center",
+        "doorman",
+        "secured garage",
+        "elevator",
+        "corner unit",
+        "floor-to-ceiling windows",
+        "two-level terraces",
+        "city/water views"
+      ],
+      "short_term_rental": true,
+      "building_units_for_sale": 20,
+      "redfin_estimate": null,
+      "redfin_estimate_delta_pct": null,
+      "redfin_rental_estimate": null,
+      "climate_risks": {
+        "flood": "Extreme (estimated \u2014 Brickell riverfront location)",
+        "wind": "Extreme",
+        "heat": "Extreme",
+        "note": "Estimated based on Miami River location. Confirm via First Street data."
+      },
+      "walk_score": 9.8,
+      "transit_score": 10.0,
+      "noise_score": 0.1,
+      "building_name": "Brickell on the River South",
+      "building_stories": 24,
+      "unit_floor": 16
+    },
+    "rental_history": [
+      {
+        "date": "2025-06",
+        "type": "LTR_attempt",
+        "rate": 4500,
+        "outcome": "removed"
+      },
+      {
+        "date": "2025-09",
+        "type": "LTR_attempt",
+        "rate": 3995,
+        "outcome": "removed"
+      },
+      {
+        "date": "2025-10",
+        "type": "LTR_attempt",
+        "rate": 3500,
+        "outcome": "removed"
+      },
+      {
+        "date": "2025-11",
+        "type": "LTR_attempt",
+        "rate": 3500,
+        "outcome": "removed"
+      }
+    ],
+    "sale_history": [
+      {
+        "date": "2020-06-30",
+        "price": 350000,
+        "sqft_price": 272
+      },
+      {
+        "date": "2025-07-31",
+        "price": 620000,
+        "sqft_price": 481,
+        "note": "Listed \u2014 did not sell"
+      },
+      {
+        "date": "2025-10-31",
+        "price": null,
+        "note": "Listing removed"
+      },
+      {
+        "date": "2026-02-19",
+        "price": 629000,
+        "sqft_price": 488,
+        "note": "Re-listed"
+      }
+    ],
+    "investment_analysis": {
+      "last_updated": "2026-02-23",
+      "config_snapshot": {
+        "down_payment_pct": 20,
+        "loan_term_years": 30,
+        "mortgage_rate_pct": 6.38
+      },
+      "purchase_price": 629000,
+      "down_payment": 125800,
+      "loan_amount": 503200,
+      "monthly_costs": {
+        "mortgage_pi": 3139,
+        "property_tax": 736,
+        "hoa": 1445,
+        "insurance": 786,
+        "maintenance_reserve": 300,
+        "capex": 200,
+        "property_management": 0
+      },
+      "total_monthly_cost": 6606,
+      "break_even_rent_gross": 6606,
+      "break_even_rent_vacancy_adjusted": 6954,
+      "rental_comps": [
+        {
+          "source": "Building history (most recent)",
+          "address": "41 SE 5th St (same building)",
+          "rent": 3500,
+          "sqft": 1289,
+          "url": "https://www.redfin.com/FL/Miami/41-SE-5th-St-33131/unit-1116/home/43398394",
+          "note": "Oct-Nov 2025 rental listings at $3,500 \u2014 DID NOT RENT"
+        },
+        {
+          "source": "Building history (earlier)",
+          "address": "41 SE 5th St (same building)",
+          "rent": 4500,
+          "sqft": 1289,
+          "url": "https://www.redfin.com/FL/Miami/41-SE-5th-St-33131/unit-1116/home/43398394",
+          "note": "Jun 2025 attempt at $4,500 \u2014 DID NOT RENT. Reduced to $4,200 then $3,995 \u2014 also removed."
+        },
+        {
+          "source": "Apartments.com",
+          "address": "Brickell/Downtown Miami 2BR avg",
+          "rent": 3962,
+          "sqft": null,
+          "url": "https://www.apartments.com/brickell-miami-fl/2-bedrooms/",
+          "note": "General Brickell 2BR average, likely higher-end"
+        }
+      ],
+      "avg_market_rent": 3500,
+      "avg_market_rent_note": "Using building's own rental history as most reliable proxy. Brickell rents declined 22% in 6 months (Jun-Nov 2025: $4,500\u2192$3,500). Even at $3,500, units in this building did NOT lease.",
+      "monthly_cash_flow_estimate": -3106,
+      "cash_flow_assessment": "cash-flow negative",
+      "str_analysis": {
+        "eligible": true,
+        "assumed_nightly_rate": 220,
+        "assumed_nights_per_month": 18,
+        "estimated_monthly_revenue": 3960,
+        "estimated_monthly_cash_flow": -2646
+      },
+      "deal_score_breakdown": {
+        "price_drop": 0,
+        "price_per_sqft_vs_neighborhood": 25,
+        "cash_flow_tier": 0,
+        "hoa_level": 0,
+        "climate_risk": 0,
+        "redfin_estimate_delta": 0,
+        "total": 25
+      },
+      "qualitative_notes": "WATCH-ONLY. The 19% price/sqft discount vs Brickell avg ($488 vs $603) is the sole deal signal \u2014 but everything else is a red flag. (1) HOA at $1,445/mo is a structural cash-flow killer. (2) The building's own rental history shows declining rents ($4,500\u2192$3,500 in 6 months) \u2014 and even $3,500 failed to rent. (3) 20 units for sale in this 24-story building signals deep supply overhang. (4) Previously listed at $620K Jul-Oct 2025 without selling; current list is $10K higher \u2014 wrong direction. (5) Extreme climate risk on the Miami River (flood + wind). Break-even rent ($6,954) is 2x achievable market rent ($3,500). WATCH: flag for re-analysis if price drops to $490-500K range, where break-even improves dramatically."
+    }
+  }
+];
+
+// Header stats
+var pos = 0, be = 0, neg = 0;
+PROPERTIES.forEach(function(p) {
+  var a = (p.investment_analysis || {}).cash_flow_assessment || '';
+  if (a === 'cash-flow positive') pos++;
+  else if (a === 'near break-even') be++;
+  else if (a === 'cash-flow negative') neg++;
+});
+document.getElementById('stat-positive').textContent = pos;
+document.getElementById('stat-breakeven').textContent = be;
+document.getElementById('stat-negative').textContent = neg;
+
+// Row click → show detail card
+var rows = document.querySelectorAll('.prop-row');
+var placeholder = document.getElementById('detail-placeholder');
+rows.forEach(function(row) {
+  row.addEventListener('click', function() {
+    var slug = row.dataset.slug;
+    rows.forEach(function(r) { r.classList.remove('selected'); });
+    row.classList.add('selected');
+    document.querySelectorAll('.detail-card').forEach(function(c) { c.classList.remove('visible'); });
+    var card = document.getElementById('card-' + slug);
+    if (card) {
+      card.classList.add('visible');
+      if (placeholder) placeholder.style.display = 'none';
+      setTimeout(function() { card.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
+    }
+  });
+});
+
+if (PROPERTIES.length === 1) {
+  var firstRow = document.querySelector('.prop-row');
+  if (firstRow) firstRow.click();
+}
+</script>
+
+<script>
+
+  (function() {
+    var ctx = document.getElementById('cost-398-ne-5th-st-3811-miami');
+    if (!ctx) return;
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ["Mortgage P&I", "Property Tax", "HOA", "Insurance", "Maintenance", "CapEx"],
+        datasets: [{ data: [6650, 1994, 1543, 854, 300, 200], backgroundColor: ['#6366f1','#0ea5e9','#f59e0b','#22c55e','#f97316','#a855f7','#ec4899'] }]
+      },
+      options: {
+        plugins: {
+          legend: { position: 'right', labels: { color: '#cbd5e1', font: { size: 11 } } },
+          tooltip: { callbacks: { label: function(c) { return c.label + ': $' + c.raw.toLocaleString(); } } }
+        },
+        cutout: '55%'
+      }
+    });
+  })();
+  (function() {
+    var ctx = document.getElementById('comps-398-ne-5th-st-3811-miami');
+    if (!ctx) return;
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ["Brickell/Downtown Miami 2", "Break-even", "Avg Market"],
+        datasets: [{ label: 'Monthly Rent', data: [3962, 12148, 3962], backgroundColor: ["#6366f1", "#ef4444", "#22c55e"] }]
+      },
+      options: {
+        scales: {
+          y: { ticks: { color: '#94a3b8', callback: function(v) { return '$' + v.toLocaleString(); } }, grid: { color: '#1e293b' } },
+          x: { ticks: { color: '#94a3b8', maxRotation: 30 }, grid: { color: 'transparent' } }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: function(c) { return '$' + c.raw.toLocaleString() + '/mo'; } } }
+        }
+      }
+    });
+  })();
+  (function() {
+    var ctx = document.getElementById('score-398-ne-5th-st-3811-miami');
+    if (!ctx) return;
+    var maxVals = [25, 25, 25, 10, 10, 5];
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ["Price Drop", "Price/SqFt", "Cash Flow", "HOA", "Climate", "Redfin \u0394"],
+        datasets: [
+          { label: 'Score', data: [0, 0, 0, 0, 0, 0], backgroundColor: ["#ef4444", "#ef4444", "#ef4444", "#ef4444", "#ef4444", "#ef4444"] },
+          { label: 'Max', data: [25, 25, 25, 10, 10, 5], backgroundColor: 'rgba(255,255,255,0.05)', borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1 }
+        ]
+      },
+      options: {
+        indexAxis: 'y',
+        scales: {
+          x: { stacked: false, max: 25, ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } },
+          y: { ticks: { color: '#94a3b8' }, grid: { color: 'transparent' } }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: function(c) { return c.dataset.label + ': ' + c.raw + ' pts'; } } }
+        }
+      }
+    });
+  })();
+
+  (function() {
+    var ctx = document.getElementById('cost-41-se-5th-st-1116-miami');
+    if (!ctx) return;
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ["Mortgage P&I", "Property Tax", "HOA", "Insurance", "Maintenance", "CapEx"],
+        datasets: [{ data: [3139, 736, 1445, 786, 300, 200], backgroundColor: ['#6366f1','#0ea5e9','#f59e0b','#22c55e','#f97316','#a855f7','#ec4899'] }]
+      },
+      options: {
+        plugins: {
+          legend: { position: 'right', labels: { color: '#cbd5e1', font: { size: 11 } } },
+          tooltip: { callbacks: { label: function(c) { return c.label + ': $' + c.raw.toLocaleString(); } } }
+        },
+        cutout: '55%'
+      }
+    });
+  })();
+  (function() {
+    var ctx = document.getElementById('comps-41-se-5th-st-1116-miami');
+    if (!ctx) return;
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ["41 SE 5th St (same buildi", "41 SE 5th St (same buildi", "Brickell/Downtown Miami 2", "Break-even", "Avg Market"],
+        datasets: [{ label: 'Monthly Rent', data: [3500, 4500, 3962, 6954, 3500], backgroundColor: ["#6366f1", "#6366f1", "#6366f1", "#ef4444", "#22c55e"] }]
+      },
+      options: {
+        scales: {
+          y: { ticks: { color: '#94a3b8', callback: function(v) { return '$' + v.toLocaleString(); } }, grid: { color: '#1e293b' } },
+          x: { ticks: { color: '#94a3b8', maxRotation: 30 }, grid: { color: 'transparent' } }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: function(c) { return '$' + c.raw.toLocaleString() + '/mo'; } } }
+        }
+      }
+    });
+  })();
+  (function() {
+    var ctx = document.getElementById('score-41-se-5th-st-1116-miami');
+    if (!ctx) return;
+    var maxVals = [25, 25, 25, 10, 10, 5];
+    new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: ["Price Drop", "Price/SqFt", "Cash Flow", "HOA", "Climate", "Redfin \u0394"],
+        datasets: [
+          { label: 'Score', data: [0, 25, 0, 0, 0, 0], backgroundColor: ["#ef4444", "#22c55e", "#ef4444", "#ef4444", "#ef4444", "#ef4444"] },
+          { label: 'Max', data: [25, 25, 25, 10, 10, 5], backgroundColor: 'rgba(255,255,255,0.05)', borderColor: 'rgba(255,255,255,0.1)', borderWidth: 1 }
+        ]
+      },
+      options: {
+        indexAxis: 'y',
+        scales: {
+          x: { stacked: false, max: 25, ticks: { color: '#94a3b8' }, grid: { color: '#1e293b' } },
+          y: { ticks: { color: '#94a3b8' }, grid: { color: 'transparent' } }
+        },
+        plugins: {
+          legend: { display: false },
+          tooltip: { callbacks: { label: function(c) { return c.dataset.label + ': ' + c.raw + ' pts'; } } }
+        }
+      }
+    });
+  })();
+</script>
+</body>
+</html>
