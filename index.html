@@ -31,7 +31,8 @@ a:hover { text-decoration: underline; }
 .card-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 16px; padding-left: 12px; }
 .card-title { font-size: 1rem; font-weight: 600; margin-bottom: 2px; }
 .badge-group { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; }
-.badge { padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; color: #fff; white-space: nowrap; }
+.badge { padding: 3px 10px; border-radius: 12px; font-size: 0.75rem; font-weight: 600; color: #fff; white-space: nowrap; max-width: 160px; overflow: hidden; text-overflow: ellipsis; display: inline-block; vertical-align: middle; }
+.badge-hint { font-size: 0.7rem; color: var(--muted); margin-left: 4px; cursor: help; }
 
 /* Climate */
 .climate-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; padding-left: 12px; }
@@ -45,6 +46,10 @@ a:hover { text-decoration: underline; }
 .table-wrap { overflow-x: auto; border-radius: 12px; border: 1px solid var(--border); }
 table { width: 100%; border-collapse: collapse; background: var(--surface); }
 thead th { background: var(--surface2); color: var(--muted); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; padding: 10px 16px; text-align: left; white-space: nowrap; }
+thead th.sortable { cursor: pointer; user-select: none; }
+thead th.sortable:hover { color: var(--text); }
+thead th.sort-asc::after { content: ' ▲'; font-size: 0.65rem; }
+thead th.sort-desc::after { content: ' ▼'; font-size: 0.65rem; }
 tbody tr { border-top: 1px solid var(--border); transition: background 0.15s; }
 tbody tr:hover { background: var(--surface2); cursor: pointer; }
 td { padding: 12px 16px; vertical-align: middle; }
@@ -80,7 +85,7 @@ td.small { font-size: 0.75rem; color: var(--muted); }
 <div class="header">
   <div class="header-left">
     <h1>&#127968; <span>Homey</span> Investment Dashboard</h1>
-    <div class="header-meta">Updated February 25, 2026 at 07:08 AM &bull; 10 properties tracked</div>
+    <div class="header-meta">Updated February 25, 2026 at 12:33 PM &bull; 10 properties tracked</div>
   </div>
   <div class="header-stats">
     <div class="hstat"><div class="hstat-val" id="stat-positive">0</div><div class="hstat-label">Cash Flow +</div></div>
@@ -96,161 +101,197 @@ td.small { font-size: 0.75rem; color: var(--muted); }
     <table>
       <thead>
         <tr>
-          <th>Property</th><th>Price</th><th>Deal Score</th><th>Monthly Cost</th>
-          <th>Break-even Rent</th><th>Market Rent</th><th>Est. Cash Flow</th>
-          <th>Assessment</th><th>Updated</th>
+          <th>Property</th>
+          <th class="sortable" data-col="price">Price</th>
+          <th class="sortable" data-col="score">Deal Score</th>
+          <th class="sortable" data-col="monthly">Monthly Cost</th>
+          <th class="sortable" data-col="breakeven">Break-even Rent</th>
+          <th class="sortable" data-col="rent">Market Rent</th>
+          <th class="sortable" data-col="cf">Est. Cash Flow</th>
+          <th>Assessment</th>
+          <th class="sortable" data-col="date">Scan Date</th>
         </tr>
       </thead>
       <tbody id="prop-table-body">
-        <tr class="prop-row" data-slug="10500-sw-126th-st-miami-kendall">
+        <tr class="prop-row" data-slug="10500-sw-126th-st-miami-kendall"
+            data-price="670000" data-score="65"
+            data-monthly="5908" data-breakeven="6219"
+            data-rent="6798" data-cf="890" data-date="2026-02-23">
           <td>
             <a href="https://www.redfin.com/FL/Miami/10500-SW-126th-St-33176/home/43163848" target="_blank" class="prop-link">10500 SW 126th St, Miami, FL 33176</a>
             <div class="prop-meta">Kendall &bull; Miami &bull; 4,133 sqft </div>
             <div class="prop-meta" style="color:#f97316">⚠️ Extreme, Extreme</div>
           </td>
-          <td class="num">$670,000</td>
-          <td class="num"><span style="color:#22c55e;font-weight:700">65/100</span></td>
-          <td class="num">$5,908</td>
-          <td class="num">$6,219</td>
-          <td class="num">$6,798</td>
-          <td class="num"><span style="color:#22c55e;font-weight:700">$890/mo</span></td>
-          <td><span class="badge" style="background:#22c55e">Cash Flow Positive</span></td>
-          <td class="num small">2026-02-23</td>
+          <td class="num" data-val="670000">$670,000</td>
+          <td class="num" data-val="65"><span style="color:#22c55e;font-weight:700">65/100</span></td>
+          <td class="num" data-val="5908">$5,908</td>
+          <td class="num" data-val="6219">$6,219</td>
+          <td class="num" data-val="6798">$6,798</td>
+          <td class="num" data-val="890"><span style="color:#22c55e;font-weight:700">$890/mo</span></td>
+          <td><span class="badge" style="background:#22c55e">Cash Flow +</span></td>
+          <td class="num small" data-val="2026-02-23">2026-02-23</td>
         </tr>
-        <tr class="prop-row" data-slug="11535-sw-32nd-ln-miami-westchester">
+        <tr class="prop-row" data-slug="11535-sw-32nd-ln-miami-westchester"
+            data-price="645000" data-score="47"
+            data-monthly="0" data-breakeven="0"
+            data-rent="4467" data-cf="0" data-date="2026-02-25">
           <td>
-            <a href="#" target="_blank" class="prop-link">11535 SW 32nd Ln, Miami, FL 33165</a>
+            <a href="https://www.redfin.com/FL/Miami/11535-SW-32nd-Ln-33165/home/43070477" target="_blank" class="prop-link">11535 SW 32nd Ln, Miami, FL 33165</a>
             <div class="prop-meta">Westchester &bull; Miami &bull; 2,139 sqft </div>
-            
+            <div class="prop-meta" style="color:#f97316">⚠️ ⚠️ SEVERE — 99% chance of flooding in next 30 years, Extreme — 7 days above 105°F this year, 31 days in 30 years</div>
           </td>
-          <td class="num">$645,000</td>
-          <td class="num"><span style="color:#f59e0b;font-weight:700">47/100</span></td>
-          <td class="num">N/A</td>
-          <td class="num">N/A</td>
-          <td class="num">$4,467</td>
-          <td class="num">N/A</td>
-          <td><span class="badge" style="background:#ef4444">Near Break Even (Without Flood Insurance) / Negative With Flood Insurance</span></td>
-          <td class="num small">—</td>
+          <td class="num" data-val="645000">$645,000</td>
+          <td class="num" data-val="47"><span style="color:#f59e0b;font-weight:700">47/100</span></td>
+          <td class="num" data-val="0">N/A</td>
+          <td class="num" data-val="0">N/A</td>
+          <td class="num" data-val="4467">$4,467</td>
+          <td class="num" data-val="0">N/A</td>
+          <td><span class="badge" style="background:#f59e0b" title="near break-even (without flood insurance) / negative with flood insurance">Near Break-even</span><span class="badge-hint" title="near break-even (without flood insurance) / negative with flood insurance">⚠️ see note</span></td>
+          <td class="num small" data-val="2026-02-25">2026-02-25</td>
         </tr>
-        <tr class="prop-row" data-slug="15109-sw-71st-ln-miami-kendall">
+        <tr class="prop-row" data-slug="15109-sw-71st-ln-miami-kendall"
+            data-price="660000" data-score="42"
+            data-monthly="5044" data-breakeven="5310"
+            data-rent="5300" data-cf="-10" data-date="2026-02-24">
           <td>
             <a href="https://www.redfin.com/FL/Miami/15109-SW-71st-Ln-33193/home/" target="_blank" class="prop-link">15109 SW 71st Ln, Miami, FL 33193</a>
             <div class="prop-meta">Kendall &bull; Miami &bull; 1,885 sqft </div>
-            <div class="prop-meta" style="color:#f97316">⚠️ Major</div>
+            <div class="prop-meta" style="color:#f97316">⚠️ Major, Inland Kendall/West Miami-Dade — minimal flood risk (standard residential zoning away from canals). Heat Major is county-wide standard. Wind Moderate.</div>
           </td>
-          <td class="num">$660,000</td>
-          <td class="num"><span style="color:#f59e0b;font-weight:700">42/100</span></td>
-          <td class="num">$5,044</td>
-          <td class="num">$5,310</td>
-          <td class="num">$5,300</td>
-          <td class="num"><span style="color:#f59e0b;font-weight:700">-$10/mo</span></td>
-          <td><span class="badge" style="background:#f59e0b">Near Break Even</span></td>
-          <td class="num small">2026-02-24</td>
+          <td class="num" data-val="660000">$660,000</td>
+          <td class="num" data-val="42"><span style="color:#f59e0b;font-weight:700">42/100</span></td>
+          <td class="num" data-val="5044">$5,044</td>
+          <td class="num" data-val="5310">$5,310</td>
+          <td class="num" data-val="5300">$5,300</td>
+          <td class="num" data-val="-10"><span style="color:#f59e0b;font-weight:700">-$10/mo</span></td>
+          <td><span class="badge" style="background:#f59e0b">Near Break-even</span></td>
+          <td class="num small" data-val="2026-02-24">2026-02-24</td>
         </tr>
-        <tr class="prop-row" data-slug="15416-sw-99th-ln-miami-kendall">
+        <tr class="prop-row" data-slug="15416-sw-99th-ln-miami-kendall"
+            data-price="750000" data-score="35"
+            data-monthly="0" data-breakeven="0"
+            data-rent="4200" data-cf="0" data-date="2026-02-25">
           <td>
-            <a href="#" target="_blank" class="prop-link">15416 SW 99th Ln, Miami, FL 33196</a>
+            <a href="https://www.redfin.com/FL/Miami/15416-SW-99th-Ln-33196/home/43186272" target="_blank" class="prop-link">15416 SW 99th Ln, Miami, FL 33196</a>
             <div class="prop-meta">Kendall West &bull; Miami &bull; 2,628 sqft </div>
-            
+            <div class="prop-meta" style="color:#f97316">⚠️ Major — 13% chance of wildfire in next 30 years, Extreme — 7 days above 105°F this year, 29 days in 30 years</div>
           </td>
-          <td class="num">$750,000</td>
-          <td class="num"><span style="color:#ef4444;font-weight:700">35/100</span></td>
-          <td class="num">N/A</td>
-          <td class="num">N/A</td>
-          <td class="num">$4,200</td>
-          <td class="num">N/A</td>
-          <td><span class="badge" style="background:#ef4444">Cash Flow Negative</span></td>
-          <td class="num small">—</td>
+          <td class="num" data-val="750000">$750,000</td>
+          <td class="num" data-val="35"><span style="color:#ef4444;font-weight:700">35/100</span></td>
+          <td class="num" data-val="0">N/A</td>
+          <td class="num" data-val="0">N/A</td>
+          <td class="num" data-val="4200">$4,200</td>
+          <td class="num" data-val="0">N/A</td>
+          <td><span class="badge" style="background:#ef4444">Cash Flow −</span></td>
+          <td class="num small" data-val="2026-02-25">2026-02-25</td>
         </tr>
-        <tr class="prop-row" data-slug="18451-sw-90th-ave-cutler-bay">
+        <tr class="prop-row" data-slug="18451-sw-90th-ave-cutler-bay"
+            data-price="524900" data-score="42"
+            data-monthly="4113" data-breakeven="4330"
+            data-rent="3687" data-cf="-643" data-date="2026-02-24">
           <td>
             <a href="https://www.redfin.com/FL/Miami/18451-SW-90th-Ave-33157/home/" target="_blank" class="prop-link">18451 SW 90th Ave, Miami, FL 33157</a>
             <div class="prop-meta">Cutler Bay &bull; Miami &bull; 1,656 sqft <span title="STR Eligible" style="color:#0ea5e9;font-size:0.75rem">🏖️ STR</span></div>
             <div class="prop-meta" style="color:#f97316">⚠️ Major, Major</div>
           </td>
-          <td class="num">$524,900</td>
-          <td class="num"><span style="color:#f59e0b;font-weight:700">42/100</span></td>
-          <td class="num">$4,113</td>
-          <td class="num">$4,330</td>
-          <td class="num">$3,687</td>
-          <td class="num"><span style="color:#ef4444;font-weight:700">-$643/mo</span></td>
-          <td><span class="badge" style="background:#ef4444">Cash Flow Negative</span></td>
-          <td class="num small">2026-02-24</td>
+          <td class="num" data-val="524900">$524,900</td>
+          <td class="num" data-val="42"><span style="color:#f59e0b;font-weight:700">42/100</span></td>
+          <td class="num" data-val="4113">$4,113</td>
+          <td class="num" data-val="4330">$4,330</td>
+          <td class="num" data-val="3687">$3,687</td>
+          <td class="num" data-val="-643"><span style="color:#ef4444;font-weight:700">-$643/mo</span></td>
+          <td><span class="badge" style="background:#ef4444">Cash Flow −</span></td>
+          <td class="num small" data-val="2026-02-24">2026-02-24</td>
         </tr>
-        <tr class="prop-row" data-slug="398-ne-5th-st-3811-miami">
+        <tr class="prop-row" data-slug="398-ne-5th-st-3811-miami"
+            data-price="1385000" data-score="0"
+            data-monthly="11541" data-breakeven="12148"
+            data-rent="3962" data-cf="-7579" data-date="2026-02-22">
           <td>
             <a href="https://www.redfin.com/FL/Miami/398-NE-5th-St-33132/unit-3811/home/185391166" target="_blank" class="prop-link">398 NE 5th St #3811, Miami, FL 33132</a>
             <div class="prop-meta">Downtown Miami / Brickell &bull; Miami &bull; 818 sqft <span title="STR Eligible" style="color:#0ea5e9;font-size:0.75rem">🏖️ STR</span></div>
-            <div class="prop-meta" style="color:#f97316">⚠️ Major, Extreme, Extreme</div>
+            <div class="prop-meta" style="color:#f97316">⚠️ Major, Extreme</div>
           </td>
-          <td class="num">$1,385,000</td>
-          <td class="num"><span style="color:#ef4444;font-weight:700">0/100</span></td>
-          <td class="num">$11,541</td>
-          <td class="num">$12,148</td>
-          <td class="num">$3,962</td>
-          <td class="num"><span style="color:#ef4444;font-weight:700">-$7,579/mo</span></td>
-          <td><span class="badge" style="background:#ef4444">Cash Flow Negative</span></td>
-          <td class="num small">2026-02-22</td>
+          <td class="num" data-val="1385000">$1,385,000</td>
+          <td class="num" data-val="0"><span style="color:#ef4444;font-weight:700">0/100</span></td>
+          <td class="num" data-val="11541">$11,541</td>
+          <td class="num" data-val="12148">$12,148</td>
+          <td class="num" data-val="3962">$3,962</td>
+          <td class="num" data-val="-7579"><span style="color:#ef4444;font-weight:700">-$7,579/mo</span></td>
+          <td><span class="badge" style="background:#ef4444">Cash Flow −</span></td>
+          <td class="num small" data-val="2026-02-22">2026-02-22</td>
         </tr>
-        <tr class="prop-row" data-slug="41-se-5th-st-1116-miami">
+        <tr class="prop-row" data-slug="41-se-5th-st-1116-miami"
+            data-price="629000" data-score="25"
+            data-monthly="6606" data-breakeven="6954"
+            data-rent="3500" data-cf="-3106" data-date="2026-02-23">
           <td>
             <a href="https://www.redfin.com/FL/Miami/41-SE-5th-St-33131/unit-1116/home/43398394" target="_blank" class="prop-link">41 SE 5th St #1116, Miami, FL 33131</a>
             <div class="prop-meta">Brickell / Brickell on the River South &bull; Miami &bull; 1,289 sqft <span title="STR Eligible" style="color:#0ea5e9;font-size:0.75rem">🏖️ STR</span></div>
-            <div class="prop-meta" style="color:#f97316">⚠️ Extreme, Extreme</div>
+            <div class="prop-meta" style="color:#f97316">⚠️ Extreme (estimated — Brickell riverfront location), Extreme</div>
           </td>
-          <td class="num">$629,000</td>
-          <td class="num"><span style="color:#ef4444;font-weight:700">25/100</span></td>
-          <td class="num">$6,606</td>
-          <td class="num">$6,954</td>
-          <td class="num">$3,500</td>
-          <td class="num"><span style="color:#ef4444;font-weight:700">-$3,106/mo</span></td>
-          <td><span class="badge" style="background:#ef4444">Cash Flow Negative</span></td>
-          <td class="num small">2026-02-23</td>
+          <td class="num" data-val="629000">$629,000</td>
+          <td class="num" data-val="25"><span style="color:#ef4444;font-weight:700">25/100</span></td>
+          <td class="num" data-val="6606">$6,606</td>
+          <td class="num" data-val="6954">$6,954</td>
+          <td class="num" data-val="3500">$3,500</td>
+          <td class="num" data-val="-3106"><span style="color:#ef4444;font-weight:700">-$3,106/mo</span></td>
+          <td><span class="badge" style="background:#ef4444">Cash Flow −</span></td>
+          <td class="num small" data-val="2026-02-23">2026-02-23</td>
         </tr>
-        <tr class="prop-row" data-slug="5260-sw-2nd-st-coral-gables">
+        <tr class="prop-row" data-slug="5260-sw-2nd-st-coral-gables"
+            data-price="559000" data-score="47"
+            data-monthly="0" data-breakeven="0"
+            data-rent="4298" data-cf="0" data-date="2026-02-25">
           <td>
-            <a href="#" target="_blank" class="prop-link">5260 SW 2nd St, Coral Gables, FL 33134</a>
+            <a href="https://www.redfin.com/FL/Coral-Gables/5260-SW-2nd-St-33134/home/42738780" target="_blank" class="prop-link">5260 SW 2nd St, Coral Gables, FL 33134</a>
             <div class="prop-meta">Coral Gables / West Miami border &bull; Miami &bull; 1,586 sqft </div>
-            
+            <div class="prop-meta" style="color:#f97316">⚠️ Extreme — 7 days above 104°F expected this year, 30 days in 30 years, Extreme — 99% chance of strong winds in next 30 years</div>
           </td>
-          <td class="num">$559,000</td>
-          <td class="num"><span style="color:#f59e0b;font-weight:700">47/100</span></td>
-          <td class="num">N/A</td>
-          <td class="num">N/A</td>
-          <td class="num">$4,298</td>
-          <td class="num">N/A</td>
-          <td><span class="badge" style="background:#f59e0b">Near Break Even</span></td>
-          <td class="num small">—</td>
+          <td class="num" data-val="559000">$559,000</td>
+          <td class="num" data-val="47"><span style="color:#f59e0b;font-weight:700">47/100</span></td>
+          <td class="num" data-val="0">N/A</td>
+          <td class="num" data-val="0">N/A</td>
+          <td class="num" data-val="4298">$4,298</td>
+          <td class="num" data-val="0">N/A</td>
+          <td><span class="badge" style="background:#f59e0b">Near Break-even</span></td>
+          <td class="num small" data-val="2026-02-25">2026-02-25</td>
         </tr>
-        <tr class="prop-row" data-slug="7825-sw-103rd-pl-miami-kendall">
+        <tr class="prop-row" data-slug="7825-sw-103rd-pl-miami-kendall"
+            data-price="589900" data-score="35"
+            data-monthly="4781" data-breakeven="5033"
+            data-rent="2946" data-cf="-1835" data-date="2026-02-23">
           <td>
             <a href="https://www.redfin.com/FL/Miami/7825-SW-103rd-Pl-33173/home/43085832" target="_blank" class="prop-link">7825 SW 103rd Pl, Miami, FL 33173</a>
             <div class="prop-meta">Kendall / KendallTown &bull; Miami &bull; 1,966 sqft </div>
-            
+            <div class="prop-meta" style="color:#f97316">⚠️ Major — 72% chance in 30 years, Extreme — 99% chance strong winds</div>
           </td>
-          <td class="num">$589,900</td>
-          <td class="num"><span style="color:#ef4444;font-weight:700">35/100</span></td>
-          <td class="num">$4,781</td>
-          <td class="num">$5,033</td>
-          <td class="num">$2,946</td>
-          <td class="num"><span style="color:#ef4444;font-weight:700">-$1,835/mo</span></td>
-          <td><span class="badge" style="background:#ef4444">Cash Flow Negative</span></td>
-          <td class="num small">2026-02-23</td>
+          <td class="num" data-val="589900">$589,900</td>
+          <td class="num" data-val="35"><span style="color:#ef4444;font-weight:700">35/100</span></td>
+          <td class="num" data-val="4781">$4,781</td>
+          <td class="num" data-val="5033">$5,033</td>
+          <td class="num" data-val="2946">$2,946</td>
+          <td class="num" data-val="-1835"><span style="color:#ef4444;font-weight:700">-$1,835/mo</span></td>
+          <td><span class="badge" style="background:#ef4444">Cash Flow −</span></td>
+          <td class="num small" data-val="2026-02-23">2026-02-23</td>
         </tr>
-        <tr class="prop-row" data-slug="9711-caribbean-blvd-cutler-bay">
+        <tr class="prop-row" data-slug="9711-caribbean-blvd-cutler-bay"
+            data-price="580000" data-score="72"
+            data-monthly="4493" data-breakeven="4730"
+            data-rent="5200" data-cf="470" data-date="2026-02-24">
           <td>
             <a href="https://www.redfin.com/FL/Cutler-Bay/9711-Caribbean-Blvd-33189/home/" target="_blank" class="prop-link">9711 Caribbean Blvd, Cutler Bay, FL 33189</a>
             <div class="prop-meta">Cutler Bay &bull; Miami &bull; 1,954 sqft <span title="STR Eligible" style="color:#0ea5e9;font-size:0.75rem">🏖️ STR</span></div>
-            <div class="prop-meta" style="color:#f97316">⚠️ Major</div>
+            <div class="prop-meta" style="color:#f97316">⚠️ Major, Inland Cutler Bay — NOT canal front. Lower flood exposure than coastal/canal properties. Heat: Major is standard Miami-Dade county-wide.</div>
           </td>
-          <td class="num">$580,000</td>
-          <td class="num"><span style="color:#22c55e;font-weight:700">72/100</span></td>
-          <td class="num">$4,493</td>
-          <td class="num">$4,730</td>
-          <td class="num">$5,200</td>
-          <td class="num"><span style="color:#22c55e;font-weight:700">$470/mo</span></td>
-          <td><span class="badge" style="background:#22c55e">Cash Flow Positive</span></td>
-          <td class="num small">2026-02-24</td>
+          <td class="num" data-val="580000">$580,000</td>
+          <td class="num" data-val="72"><span style="color:#22c55e;font-weight:700">72/100</span></td>
+          <td class="num" data-val="4493">$4,493</td>
+          <td class="num" data-val="4730">$4,730</td>
+          <td class="num" data-val="5200">$5,200</td>
+          <td class="num" data-val="470"><span style="color:#22c55e;font-weight:700">$470/mo</span></td>
+          <td><span class="badge" style="background:#22c55e">Cash Flow +</span></td>
+          <td class="num small" data-val="2026-02-24">2026-02-24</td>
         </tr></tbody>
     </table>
   </div>
@@ -269,7 +310,7 @@ td.small { font-size: 0.75rem; color: var(--muted); }
       <h3 class="card-title">10500 SW 126th St, Miami, FL 33176</h3>
       <div class="prop-meta">Kendall &bull; Miami &bull; 4BR/2.5BA &bull; 4133 sqft</div>
     </div>
-    <div class="badge-group"><span class="badge" style="background:#22c55e">⭐ 65/100 — Strong Deal</span> <span class="badge" style="background:#22c55e">Cash Flow Positive</span></div>
+    <div class="badge-group"><span class="badge" style="background:#22c55e">⭐ 65/100 — Strong Deal</span> <span class="badge" style="background:#22c55e">Cash Flow +</span></div>
   </div>
 
   <div class="climate-row"><span class="climate-tag" style="border-color:#22c55e;color:#22c55e">Flood: Minimal</span><span class="climate-tag" style="border-color:#ef4444;color:#ef4444">Wind: Extreme</span><span class="climate-tag" style="border-color:#ef4444;color:#ef4444">Heat: Extreme</span></div>
@@ -309,7 +350,7 @@ td.small { font-size: 0.75rem; color: var(--muted); }
       <h3 class="card-title">11535 SW 32nd Ln, Miami, FL 33165</h3>
       <div class="prop-meta">Westchester &bull; Miami &bull; 4BR/3BA &bull; 2139 sqft</div>
     </div>
-    <div class="badge-group"><span class="badge" style="background:#f59e0b">⭐ 47/100 — Moderate</span> <span class="badge" style="background:#ef4444">Near Break Even (Without Flood Insurance) / Negative With Flood Insurance</span></div>
+    <div class="badge-group"><span class="badge" style="background:#f59e0b">⭐ 47/100 — Moderate</span> <span class="badge" style="background:#f59e0b" title="near break-even (without flood insurance) / negative with flood insurance">Near Break-even</span><span class="badge-hint" title="near break-even (without flood insurance) / negative with flood insurance">⚠️ see note</span></div>
   </div>
 
   <div class="climate-row"><span class="climate-tag" style="border-color:#22c55e;color:#22c55e">Flood: ⚠️ SEVERE — 99% chance of flooding in next 30 years</span><span class="climate-tag" style="border-color:#22c55e;color:#22c55e">Fire: Minor — 0.00% wildfire chance</span><span class="climate-tag" style="border-color:#22c55e;color:#22c55e">Heat: Extreme — 7 days above 105°F this year, 31 days in 30 years</span><span class="climate-tag" style="border-color:#22c55e;color:#22c55e">Wind: Extreme — 99% chance of strong winds in next 30 years</span><span class="climate-tag" style="border-color:#22c55e;color:#22c55e">Air: Minor</span></div>
@@ -323,7 +364,7 @@ td.small { font-size: 0.75rem; color: var(--muted); }
     <div class="stat-box"><div class="stat-label">Total Monthly Cost</div><div class="stat-value">N/A</div></div>
     <div class="stat-box"><div class="stat-label">Break-even Rent</div><div class="stat-value">N/A</div></div>
     <div class="stat-box"><div class="stat-label">Avg Market Rent</div><div class="stat-value">$4,467</div></div>
-    <div class="stat-box" style="border-color:#ef4444"><div class="stat-label">Est. Cash Flow</div><div class="stat-value" style="color:#ef4444">N/A</div></div>
+    <div class="stat-box" style="border-color:#f59e0b"><div class="stat-label">Est. Cash Flow</div><div class="stat-value" style="color:#f59e0b">N/A</div></div>
     
   </div>
 
@@ -344,7 +385,7 @@ td.small { font-size: 0.75rem; color: var(--muted); }
       <h3 class="card-title">15109 SW 71st Ln, Miami, FL 33193</h3>
       <div class="prop-meta">Kendall &bull; Miami &bull; 5BR/3BA &bull; 1885 sqft</div>
     </div>
-    <div class="badge-group"><span class="badge" style="background:#f59e0b">⭐ 42/100 — Moderate</span> <span class="badge" style="background:#f59e0b">Near Break Even</span></div>
+    <div class="badge-group"><span class="badge" style="background:#f59e0b">⭐ 42/100 — Moderate</span> <span class="badge" style="background:#f59e0b">Near Break-even</span></div>
   </div>
 
   <div class="climate-row"><span class="climate-tag" style="border-color:#22c55e;color:#22c55e">Flood: Minimal</span><span class="climate-tag" style="border-color:#f59e0b;color:#f59e0b">Wind: Moderate</span><span class="climate-tag" style="border-color:#f97316;color:#f97316">Heat: Major</span><span class="climate-tag" style="border-color:#22c55e;color:#22c55e">Notes: Inland Kendall/West Miami-Dade — minimal flood risk (standard residential zoning away from canals). Heat Major is county-wide standard. Wind Moderate.</span></div>
@@ -388,7 +429,7 @@ td.small { font-size: 0.75rem; color: var(--muted); }
       <h3 class="card-title">15416 SW 99th Ln, Miami, FL 33196</h3>
       <div class="prop-meta">Kendall West &bull; Miami &bull; 4BR/3BA &bull; 2628 sqft</div>
     </div>
-    <div class="badge-group"><span class="badge" style="background:#ef4444">⭐ 35/100 — Weak Deal</span> <span class="badge" style="background:#ef4444">Cash Flow Negative</span></div>
+    <div class="badge-group"><span class="badge" style="background:#ef4444">⭐ 35/100 — Weak Deal</span> <span class="badge" style="background:#ef4444">Cash Flow −</span></div>
   </div>
 
   <div class="climate-row"><span class="climate-tag" style="border-color:#22c55e;color:#22c55e">Flood: Moderate — 20% chance of flooding in next 30 years</span><span class="climate-tag" style="border-color:#22c55e;color:#22c55e">Fire: Major — 13% chance of wildfire in next 30 years</span><span class="climate-tag" style="border-color:#22c55e;color:#22c55e">Heat: Extreme — 7 days above 105°F this year, 29 days in 30 years</span><span class="climate-tag" style="border-color:#22c55e;color:#22c55e">Wind: Extreme — 99% chance of strong winds in next 30 years</span><span class="climate-tag" style="border-color:#22c55e;color:#22c55e">Air: Minor</span></div>
@@ -423,7 +464,7 @@ td.small { font-size: 0.75rem; color: var(--muted); }
       <h3 class="card-title">18451 SW 90th Ave, Miami, FL 33157</h3>
       <div class="prop-meta">Cutler Bay &bull; Miami &bull; 4BR/2BA &bull; 1656 sqft</div>
     </div>
-    <div class="badge-group"><span class="badge" style="background:#f59e0b">⭐ 42/100 — Moderate</span> <span class="badge" style="background:#ef4444">Cash Flow Negative</span></div>
+    <div class="badge-group"><span class="badge" style="background:#f59e0b">⭐ 42/100 — Moderate</span> <span class="badge" style="background:#ef4444">Cash Flow −</span></div>
   </div>
 
   <div class="climate-row"><span class="climate-tag" style="border-color:#f97316;color:#f97316">Flood: Major</span><span class="climate-tag" style="border-color:#f59e0b;color:#f59e0b">Wind: Moderate</span><span class="climate-tag" style="border-color:#f97316;color:#f97316">Heat: Major</span><span class="climate-tag" style="border-color:#22c55e;color:#22c55e">Notes: CANAL FRONT PROPERTY — elevated flood risk (Major flag expected). Flood insurance required and can add $3,000-8,000/yr in Miami-Dade. Critical cost factor.</span></div>
@@ -467,7 +508,7 @@ td.small { font-size: 0.75rem; color: var(--muted); }
       <h3 class="card-title">398 NE 5th St #3811, Miami, FL 33132</h3>
       <div class="prop-meta">Downtown Miami / Brickell &bull; Miami &bull; 2BR/2BA &bull; 818 sqft</div>
     </div>
-    <div class="badge-group"><span class="badge" style="background:#ef4444">⭐ 0/100 — Weak Deal</span> <span class="badge" style="background:#ef4444">Cash Flow Negative</span></div>
+    <div class="badge-group"><span class="badge" style="background:#ef4444">⭐ 0/100 — Weak Deal</span> <span class="badge" style="background:#ef4444">Cash Flow −</span></div>
   </div>
 
   <div class="climate-row"><span class="climate-tag" style="border-color:#f97316;color:#f97316">Flood: Major</span><span class="climate-tag" style="border-color:#ef4444;color:#ef4444">Wind: Extreme</span><span class="climate-tag" style="border-color:#ef4444;color:#ef4444">Heat: Extreme</span></div>
@@ -516,7 +557,7 @@ td.small { font-size: 0.75rem; color: var(--muted); }
       <h3 class="card-title">41 SE 5th St #1116, Miami, FL 33131</h3>
       <div class="prop-meta">Brickell / Brickell on the River South &bull; Miami &bull; 2BR/2BA &bull; 1289 sqft</div>
     </div>
-    <div class="badge-group"><span class="badge" style="background:#ef4444">⭐ 25/100 — Weak Deal</span> <span class="badge" style="background:#ef4444">Cash Flow Negative</span></div>
+    <div class="badge-group"><span class="badge" style="background:#ef4444">⭐ 25/100 — Weak Deal</span> <span class="badge" style="background:#ef4444">Cash Flow −</span></div>
   </div>
 
   <div class="climate-row"><span class="climate-tag" style="border-color:#22c55e;color:#22c55e">Flood: Extreme (estimated — Brickell riverfront location)</span><span class="climate-tag" style="border-color:#ef4444;color:#ef4444">Wind: Extreme</span><span class="climate-tag" style="border-color:#ef4444;color:#ef4444">Heat: Extreme</span><span class="climate-tag" style="border-color:#22c55e;color:#22c55e">Note: Estimated based on Miami River location. Confirm via First Street data.</span></div>
@@ -560,7 +601,7 @@ td.small { font-size: 0.75rem; color: var(--muted); }
       <h3 class="card-title">5260 SW 2nd St, Coral Gables, FL 33134</h3>
       <div class="prop-meta">Coral Gables / West Miami border &bull; Miami &bull; 3BR/2BA &bull; 1586 sqft</div>
     </div>
-    <div class="badge-group"><span class="badge" style="background:#f59e0b">⭐ 47/100 — Moderate</span> <span class="badge" style="background:#f59e0b">Near Break Even</span></div>
+    <div class="badge-group"><span class="badge" style="background:#f59e0b">⭐ 47/100 — Moderate</span> <span class="badge" style="background:#f59e0b">Near Break-even</span></div>
   </div>
 
   <div class="climate-row"><span class="climate-tag" style="border-color:#22c55e;color:#22c55e">Flood: Minimal — Unlikely to flood in next 30 years</span><span class="climate-tag" style="border-color:#22c55e;color:#22c55e">Fire: Minimal — Unlikely to be in wildfire in 30 years</span><span class="climate-tag" style="border-color:#22c55e;color:#22c55e">Heat: Extreme — 7 days above 104°F expected this year, 30 days in 30 years</span><span class="climate-tag" style="border-color:#22c55e;color:#22c55e">Wind: Extreme — 99% chance of strong winds in next 30 years</span><span class="climate-tag" style="border-color:#22c55e;color:#22c55e">Air: Minor</span></div>
@@ -595,7 +636,7 @@ td.small { font-size: 0.75rem; color: var(--muted); }
       <h3 class="card-title">7825 SW 103rd Pl, Miami, FL 33173</h3>
       <div class="prop-meta">Kendall / KendallTown &bull; Miami &bull; 3BR/2.5BA &bull; 1966 sqft</div>
     </div>
-    <div class="badge-group"><span class="badge" style="background:#ef4444">⭐ 35/100 — Weak Deal</span> <span class="badge" style="background:#ef4444">Cash Flow Negative</span></div>
+    <div class="badge-group"><span class="badge" style="background:#ef4444">⭐ 35/100 — Weak Deal</span> <span class="badge" style="background:#ef4444">Cash Flow −</span></div>
   </div>
 
   <div class="climate-row"><span class="climate-tag" style="border-color:#22c55e;color:#22c55e">Flood: Major — 72% chance in 30 years</span><span class="climate-tag" style="border-color:#22c55e;color:#22c55e">Wind: Extreme — 99% chance strong winds</span><span class="climate-tag" style="border-color:#22c55e;color:#22c55e">Heat: Extreme — 7 days above 105F/yr</span></div>
@@ -635,7 +676,7 @@ td.small { font-size: 0.75rem; color: var(--muted); }
       <h3 class="card-title">9711 Caribbean Blvd, Cutler Bay, FL 33189</h3>
       <div class="prop-meta">Cutler Bay &bull; Miami &bull; 5BR/2BA &bull; 1954 sqft</div>
     </div>
-    <div class="badge-group"><span class="badge" style="background:#22c55e">⭐ 72/100 — Strong Deal</span> <span class="badge" style="background:#22c55e">Cash Flow Positive</span></div>
+    <div class="badge-group"><span class="badge" style="background:#22c55e">⭐ 72/100 — Strong Deal</span> <span class="badge" style="background:#22c55e">Cash Flow +</span></div>
   </div>
 
   <div class="climate-row"><span class="climate-tag" style="border-color:#22c55e;color:#22c55e">Flood: Minor</span><span class="climate-tag" style="border-color:#f59e0b;color:#f59e0b">Wind: Moderate</span><span class="climate-tag" style="border-color:#f97316;color:#f97316">Heat: Major</span><span class="climate-tag" style="border-color:#22c55e;color:#22c55e">Notes: Inland Cutler Bay — NOT canal front. Lower flood exposure than coastal/canal properties. Heat: Major is standard Miami-Dade county-wide.</span></div>
@@ -2014,13 +2055,19 @@ var PROPERTIES = [
   }
 ];
 
-// Header stats
+// Header stats — normalize assessment to handle long custom strings
+function normCF(a) {
+  a = (a || '').toLowerCase();
+  if (a.indexOf('positive') !== -1) return 'positive';
+  if (a.indexOf('near') !== -1 || a.indexOf('break') !== -1) return 'breakeven';
+  return 'negative';
+}
 var pos = 0, be = 0, neg = 0;
 PROPERTIES.forEach(function(p) {
-  var a = (p.investment_analysis || {}).cash_flow_assessment || '';
-  if (a === 'cash-flow positive') pos++;
-  else if (a === 'near break-even') be++;
-  else if (a === 'cash-flow negative') neg++;
+  var t = normCF((p.investment_analysis || {}).cash_flow_assessment);
+  if (t === 'positive') pos++;
+  else if (t === 'breakeven') be++;
+  else neg++;
 });
 document.getElementById('stat-positive').textContent = pos;
 document.getElementById('stat-breakeven').textContent = be;
@@ -2048,6 +2095,40 @@ if (PROPERTIES.length === 1) {
   var firstRow = document.querySelector('.prop-row');
   if (firstRow) firstRow.click();
 }
+
+// ── Column sorting ────────────────────────────────────────────────────────
+(function() {
+  var tbody = document.getElementById('prop-table-body');
+  var sortState = { col: null, asc: true };
+
+  document.querySelectorAll('thead th.sortable').forEach(function(th) {
+    th.addEventListener('click', function() {
+      var col = th.dataset.col;
+      var asc = (sortState.col === col) ? !sortState.asc : true;
+      sortState = { col: col, asc: asc };
+
+      // Update header indicators
+      document.querySelectorAll('thead th.sortable').forEach(function(h) {
+        h.classList.remove('sort-asc', 'sort-desc');
+      });
+      th.classList.add(asc ? 'sort-asc' : 'sort-desc');
+
+      // Sort rows
+      var rows = Array.from(tbody.querySelectorAll('tr.prop-row'));
+      rows.sort(function(a, b) {
+        var av = a.dataset[col] || '';
+        var bv = b.dataset[col] || '';
+        // Try numeric comparison first
+        var an = parseFloat(av), bn = parseFloat(bv);
+        var cmp = isNaN(an) || isNaN(bn)
+          ? av.localeCompare(bv)   // string (dates)
+          : an - bn;               // numeric
+        return asc ? cmp : -cmp;
+      });
+      rows.forEach(function(r) { tbody.appendChild(r); });
+    });
+  });
+})();
 </script>
 
 <script>
