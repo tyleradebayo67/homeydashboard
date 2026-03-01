@@ -72,6 +72,20 @@ td.small { font-size: 0.75rem; color: var(--muted); }
 .detail-card.visible { display: block; }
 .prop-row.selected { background: rgba(99,102,241,0.08) !important; }
 
+/* What-If Calculator */
+.whatif-box { background: rgba(99,102,241,0.07); border: 1px solid rgba(99,102,241,0.25); border-radius: 10px; padding: 18px 20px; margin-bottom: 20px; }
+.whatif-title { font-size: 0.8rem; font-weight: 700; color: var(--accent); margin-bottom: 14px; letter-spacing: 0.03em; }
+.whatif-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 16px; }
+.whatif-field label { display: block; font-size: 0.7rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+.whatif-row { display: flex; align-items: center; gap: 8px; }
+.whatif-row input[type=range] { flex: 1; accent-color: var(--accent); cursor: pointer; }
+.whatif-row input[type=number] { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); padding: 4px 8px; font-size: 0.9rem; text-align: right; }
+.whatif-hint { font-size: 0.7rem; color: var(--muted); margin-top: 4px; }
+.whatif-results { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 10px; border-top: 1px solid rgba(99,102,241,0.2); padding-top: 14px; }
+.wi-result-item { background: var(--surface2); border-radius: 8px; padding: 10px 12px; }
+.wi-result-label { font-size: 0.68rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
+.wi-result-val { font-size: 1rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+
 @media (max-width: 768px) {
   .main { padding: 16px; }
   .header { padding: 16px; }
@@ -85,7 +99,7 @@ td.small { font-size: 0.75rem; color: var(--muted); }
 <div class="header">
   <div class="header-left">
     <h1>&#127968; <span>Homey</span> Investment Dashboard</h1>
-    <div class="header-meta">Updated March 01, 2026 at 07:09 AM &bull; 22 properties tracked</div>
+    <div class="header-meta">Updated March 01, 2026 at 01:22 PM &bull; 22 properties tracked</div>
   </div>
   <div class="header-stats">
     <div class="hstat"><div class="hstat-val" id="stat-positive">0</div><div class="hstat-label">Cash Flow +</div></div>
@@ -550,6 +564,70 @@ td.small { font-size: 0.75rem; color: var(--muted); }
   </div>
 
   <p class='qualitative'>Deepest ppsf discount in today's scan at $248/sqft — 29% below the 33179 neighborhood avg. Buyer's market dynamics (110 DOM, 6% below list avg) create real negotiation room; target offer at $423K reduces break-even. Flood Moderate is manageable (7% in 30yr). Near Aventura Mall corridor — long-term appreciation tailwind.</p>
+
+  <div class="whatif-box"
+    data-price="450000"
+    data-tax="375"
+    data-hoa="249"
+    data-ins="562"
+    data-maint="300"
+    data-capex="200"
+    data-pm="0"
+    data-vacancy="5"
+    data-slug="1042-ne-207th-ter-miami-ives-estates">
+    <div class="whatif-title">🔧 What-If Calculator</div>
+    <div class="whatif-grid">
+      <div class="whatif-field">
+        <label>Down Payment</label>
+        <div class="whatif-row">
+          <input type="range" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('1042-ne-207th-ter-miami-ives-estates')" class="wi-dp-range" id="wi-dp-range-1042-ne-207th-ter-miami-ives-estates">
+          <input type="number" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('1042-ne-207th-ter-miami-ives-estates')" class="wi-dp-num" id="wi-dp-num-1042-ne-207th-ter-miami-ives-estates" style="width:54px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+        <div class="whatif-hint" id="wi-dp-amt-1042-ne-207th-ter-miami-ives-estates"></div>
+      </div>
+      <div class="whatif-field">
+        <label>Mortgage Rate</label>
+        <div class="whatif-row">
+          <input type="range" min="2" max="12" step="0.05" value="5.95"
+            oninput="recalcSlug('1042-ne-207th-ter-miami-ives-estates')" class="wi-rate-range" id="wi-rate-range-1042-ne-207th-ter-miami-ives-estates">
+          <input type="number" min="2" max="12" step="0.01" value="5.95"
+            oninput="recalcSlug('1042-ne-207th-ter-miami-ives-estates')" class="wi-rate-num" id="wi-rate-num-1042-ne-207th-ter-miami-ives-estates" style="width:64px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+      </div>
+      <div class="whatif-field">
+        <label>Monthly Rent</label>
+        <div class="whatif-row">
+          <span style="color:var(--muted)">$</span>
+          <input type="number" min="0" step="50" value="2750"
+            oninput="recalcSlug('1042-ne-207th-ter-miami-ives-estates')" class="wi-rent-num" id="wi-rent-num-1042-ne-207th-ter-miami-ives-estates" style="width:90px">
+          <span style="color:var(--muted)">/mo</span>
+        </div>
+      </div>
+    </div>
+    <div class="whatif-results">
+      <div class="wi-result-item">
+        <div class="wi-result-label">Monthly Cost</div>
+        <div class="wi-result-val" id="wi-cost-1042-ne-207th-ter-miami-ives-estates">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Break-even Rent</div>
+        <div class="wi-result-val" id="wi-be-1042-ne-207th-ter-miami-ives-estates">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Est. Cash Flow</div>
+        <div class="wi-result-val" id="wi-cf-1042-ne-207th-ter-miami-ives-estates" style="font-weight:700">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Assessment</div>
+        <div class="wi-result-val" id="wi-tier-1042-ne-207th-ter-miami-ives-estates">—</div>
+      </div>
+    </div>
+  </div>
+
   
 
   <div class="charts-row">
@@ -590,6 +668,70 @@ td.small { font-size: 0.75rem; color: var(--muted); }
   </div>
 
   <p class='qualitative'>Best yield candidate in Kendall — cash-flow positive at +$890/mo with zero HOA drag. At $162/sqft vs $474 neighborhood avg, this 4BR/4133sqft home is priced 66% below comparable homes per sqft. The catch: it's a foreclosure auction (ends March 4) sold As-Is — budget $30-80K for potential repairs on a 1983 build. Excellent elementary school (9/10) supports rental demand from families. Top 10% most-viewed on Redfin with 30 favorites in 14hrs — expect competitive bidding.</p>
+
+  <div class="whatif-box"
+    data-price="670000"
+    data-tax="1360"
+    data-hoa="0"
+    data-ins="838"
+    data-maint="300"
+    data-capex="200"
+    data-pm="0"
+    data-vacancy="5"
+    data-slug="10500-sw-126th-st-miami-kendall">
+    <div class="whatif-title">🔧 What-If Calculator</div>
+    <div class="whatif-grid">
+      <div class="whatif-field">
+        <label>Down Payment</label>
+        <div class="whatif-row">
+          <input type="range" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('10500-sw-126th-st-miami-kendall')" class="wi-dp-range" id="wi-dp-range-10500-sw-126th-st-miami-kendall">
+          <input type="number" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('10500-sw-126th-st-miami-kendall')" class="wi-dp-num" id="wi-dp-num-10500-sw-126th-st-miami-kendall" style="width:54px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+        <div class="whatif-hint" id="wi-dp-amt-10500-sw-126th-st-miami-kendall"></div>
+      </div>
+      <div class="whatif-field">
+        <label>Mortgage Rate</label>
+        <div class="whatif-row">
+          <input type="range" min="2" max="12" step="0.05" value="5.99"
+            oninput="recalcSlug('10500-sw-126th-st-miami-kendall')" class="wi-rate-range" id="wi-rate-range-10500-sw-126th-st-miami-kendall">
+          <input type="number" min="2" max="12" step="0.01" value="5.99"
+            oninput="recalcSlug('10500-sw-126th-st-miami-kendall')" class="wi-rate-num" id="wi-rate-num-10500-sw-126th-st-miami-kendall" style="width:64px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+      </div>
+      <div class="whatif-field">
+        <label>Monthly Rent</label>
+        <div class="whatif-row">
+          <span style="color:var(--muted)">$</span>
+          <input type="number" min="0" step="50" value="6798"
+            oninput="recalcSlug('10500-sw-126th-st-miami-kendall')" class="wi-rent-num" id="wi-rent-num-10500-sw-126th-st-miami-kendall" style="width:90px">
+          <span style="color:var(--muted)">/mo</span>
+        </div>
+      </div>
+    </div>
+    <div class="whatif-results">
+      <div class="wi-result-item">
+        <div class="wi-result-label">Monthly Cost</div>
+        <div class="wi-result-val" id="wi-cost-10500-sw-126th-st-miami-kendall">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Break-even Rent</div>
+        <div class="wi-result-val" id="wi-be-10500-sw-126th-st-miami-kendall">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Est. Cash Flow</div>
+        <div class="wi-result-val" id="wi-cf-10500-sw-126th-st-miami-kendall" style="font-weight:700">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Assessment</div>
+        <div class="wi-result-val" id="wi-tier-10500-sw-126th-st-miami-kendall">—</div>
+      </div>
+    </div>
+  </div>
+
   
 
   <div class="charts-row">
@@ -625,6 +767,70 @@ td.small { font-size: 0.75rem; color: var(--muted); }
   </div>
 
   <p class='qualitative'>The most viral new listing of today's scan (top 10% Redfin views, 78 hits in 10 hours) — fully renovated marble-floor Westchester 4BD at $302/sqft (36% below neighborhood avg of $474/sqft) near a 10/10 elementary school. On paper compelling, but Flood SEVERE (99% chance in 30 yrs) is a dealbreaker for yield investing — mandatory flood insurance at $650+/mo crushes any path to positive cash flow. This is a home to live in, not to invest in. If you must have it: negotiate hard (list-to-sale avg 5% below), factor in flood mitigation upgrades, and budget for $650/mo flood insurance ongoing.</p>
+
+  <div class="whatif-box"
+    data-price="0"
+    data-tax="538"
+    data-hoa="27"
+    data-ins="0"
+    data-maint="300"
+    data-capex="200"
+    data-pm="0"
+    data-vacancy="5"
+    data-slug="11535-sw-32nd-ln-miami-westchester">
+    <div class="whatif-title">🔧 What-If Calculator</div>
+    <div class="whatif-grid">
+      <div class="whatif-field">
+        <label>Down Payment</label>
+        <div class="whatif-row">
+          <input type="range" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('11535-sw-32nd-ln-miami-westchester')" class="wi-dp-range" id="wi-dp-range-11535-sw-32nd-ln-miami-westchester">
+          <input type="number" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('11535-sw-32nd-ln-miami-westchester')" class="wi-dp-num" id="wi-dp-num-11535-sw-32nd-ln-miami-westchester" style="width:54px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+        <div class="whatif-hint" id="wi-dp-amt-11535-sw-32nd-ln-miami-westchester"></div>
+      </div>
+      <div class="whatif-field">
+        <label>Mortgage Rate</label>
+        <div class="whatif-row">
+          <input type="range" min="2" max="12" step="0.05" value="6.5"
+            oninput="recalcSlug('11535-sw-32nd-ln-miami-westchester')" class="wi-rate-range" id="wi-rate-range-11535-sw-32nd-ln-miami-westchester">
+          <input type="number" min="2" max="12" step="0.01" value="6.5"
+            oninput="recalcSlug('11535-sw-32nd-ln-miami-westchester')" class="wi-rate-num" id="wi-rate-num-11535-sw-32nd-ln-miami-westchester" style="width:64px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+      </div>
+      <div class="whatif-field">
+        <label>Monthly Rent</label>
+        <div class="whatif-row">
+          <span style="color:var(--muted)">$</span>
+          <input type="number" min="0" step="50" value="4467"
+            oninput="recalcSlug('11535-sw-32nd-ln-miami-westchester')" class="wi-rent-num" id="wi-rent-num-11535-sw-32nd-ln-miami-westchester" style="width:90px">
+          <span style="color:var(--muted)">/mo</span>
+        </div>
+      </div>
+    </div>
+    <div class="whatif-results">
+      <div class="wi-result-item">
+        <div class="wi-result-label">Monthly Cost</div>
+        <div class="wi-result-val" id="wi-cost-11535-sw-32nd-ln-miami-westchester">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Break-even Rent</div>
+        <div class="wi-result-val" id="wi-be-11535-sw-32nd-ln-miami-westchester">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Est. Cash Flow</div>
+        <div class="wi-result-val" id="wi-cf-11535-sw-32nd-ln-miami-westchester" style="font-weight:700">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Assessment</div>
+        <div class="wi-result-val" id="wi-tier-11535-sw-32nd-ln-miami-westchester">—</div>
+      </div>
+    </div>
+  </div>
+
   
 
   <div class="charts-row">
@@ -665,6 +871,70 @@ td.small { font-size: 0.75rem; color: var(--muted); }
   </div>
 
   <p class='qualitative'>Premium Kendall Calusa Point community with best-in-class school ratings (10/10 elementary), flood-minimal risk, and turnkey income-producing status. Cash flow negative at market rent, but Redfin estimate suggests $11K upside. Offer deadline 03/02 creates urgency — exceptional school zone commands owner-occupant premium.</p>
+
+  <div class="whatif-box"
+    data-price="499000"
+    data-tax="416"
+    data-hoa="295"
+    data-ins="624"
+    data-maint="300"
+    data-capex="200"
+    data-pm="0"
+    data-vacancy="5"
+    data-slug="13360-sw-89th-ter-miami-kendall-calusa">
+    <div class="whatif-title">🔧 What-If Calculator</div>
+    <div class="whatif-grid">
+      <div class="whatif-field">
+        <label>Down Payment</label>
+        <div class="whatif-row">
+          <input type="range" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('13360-sw-89th-ter-miami-kendall-calusa')" class="wi-dp-range" id="wi-dp-range-13360-sw-89th-ter-miami-kendall-calusa">
+          <input type="number" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('13360-sw-89th-ter-miami-kendall-calusa')" class="wi-dp-num" id="wi-dp-num-13360-sw-89th-ter-miami-kendall-calusa" style="width:54px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+        <div class="whatif-hint" id="wi-dp-amt-13360-sw-89th-ter-miami-kendall-calusa"></div>
+      </div>
+      <div class="whatif-field">
+        <label>Mortgage Rate</label>
+        <div class="whatif-row">
+          <input type="range" min="2" max="12" step="0.05" value="5.95"
+            oninput="recalcSlug('13360-sw-89th-ter-miami-kendall-calusa')" class="wi-rate-range" id="wi-rate-range-13360-sw-89th-ter-miami-kendall-calusa">
+          <input type="number" min="2" max="12" step="0.01" value="5.95"
+            oninput="recalcSlug('13360-sw-89th-ter-miami-kendall-calusa')" class="wi-rate-num" id="wi-rate-num-13360-sw-89th-ter-miami-kendall-calusa" style="width:64px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+      </div>
+      <div class="whatif-field">
+        <label>Monthly Rent</label>
+        <div class="whatif-row">
+          <span style="color:var(--muted)">$</span>
+          <input type="number" min="0" step="50" value="3200"
+            oninput="recalcSlug('13360-sw-89th-ter-miami-kendall-calusa')" class="wi-rent-num" id="wi-rent-num-13360-sw-89th-ter-miami-kendall-calusa" style="width:90px">
+          <span style="color:var(--muted)">/mo</span>
+        </div>
+      </div>
+    </div>
+    <div class="whatif-results">
+      <div class="wi-result-item">
+        <div class="wi-result-label">Monthly Cost</div>
+        <div class="wi-result-val" id="wi-cost-13360-sw-89th-ter-miami-kendall-calusa">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Break-even Rent</div>
+        <div class="wi-result-val" id="wi-be-13360-sw-89th-ter-miami-kendall-calusa">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Est. Cash Flow</div>
+        <div class="wi-result-val" id="wi-cf-13360-sw-89th-ter-miami-kendall-calusa" style="font-weight:700">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Assessment</div>
+        <div class="wi-result-val" id="wi-tier-13360-sw-89th-ter-miami-kendall-calusa">—</div>
+      </div>
+    </div>
+  </div>
+
   
 
   <div class="charts-row">
@@ -705,6 +975,70 @@ td.small { font-size: 0.75rem; color: var(--muted); }
   </div>
 
   <p class='qualitative'>Fresh listing in South Miami Heights, which has shown 9.5% YoY appreciation (Jan 2026, Redfin) — one of the stronger appreciation signals in South Dade. Flood Moderate (20% / 30yr) is significantly less severe than the Flood Major properties in adjacent Princeton. No HOA, 1997 build with updated kitchen. Cash-flow deeply negative at current pricing; this is purely an appreciation play. The 8/10 middle school (Jorge Mas Canosa) supports family buyer demand. Suitable for end-user buyers seeking appreciation corridor, not investors seeking yield.</p>
+
+  <div class="whatif-box"
+    data-price="585000"
+    data-tax="488"
+    data-hoa="0"
+    data-ins="731"
+    data-maint="300"
+    data-capex="200"
+    data-pm="0"
+    data-vacancy="5"
+    data-slug="14345-sw-172nd-ln-south-miami-heights-fl">
+    <div class="whatif-title">🔧 What-If Calculator</div>
+    <div class="whatif-grid">
+      <div class="whatif-field">
+        <label>Down Payment</label>
+        <div class="whatif-row">
+          <input type="range" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('14345-sw-172nd-ln-south-miami-heights-fl')" class="wi-dp-range" id="wi-dp-range-14345-sw-172nd-ln-south-miami-heights-fl">
+          <input type="number" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('14345-sw-172nd-ln-south-miami-heights-fl')" class="wi-dp-num" id="wi-dp-num-14345-sw-172nd-ln-south-miami-heights-fl" style="width:54px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+        <div class="whatif-hint" id="wi-dp-amt-14345-sw-172nd-ln-south-miami-heights-fl"></div>
+      </div>
+      <div class="whatif-field">
+        <label>Mortgage Rate</label>
+        <div class="whatif-row">
+          <input type="range" min="2" max="12" step="0.05" value="5.98"
+            oninput="recalcSlug('14345-sw-172nd-ln-south-miami-heights-fl')" class="wi-rate-range" id="wi-rate-range-14345-sw-172nd-ln-south-miami-heights-fl">
+          <input type="number" min="2" max="12" step="0.01" value="5.98"
+            oninput="recalcSlug('14345-sw-172nd-ln-south-miami-heights-fl')" class="wi-rate-num" id="wi-rate-num-14345-sw-172nd-ln-south-miami-heights-fl" style="width:64px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+      </div>
+      <div class="whatif-field">
+        <label>Monthly Rent</label>
+        <div class="whatif-row">
+          <span style="color:var(--muted)">$</span>
+          <input type="number" min="0" step="50" value="3000"
+            oninput="recalcSlug('14345-sw-172nd-ln-south-miami-heights-fl')" class="wi-rent-num" id="wi-rent-num-14345-sw-172nd-ln-south-miami-heights-fl" style="width:90px">
+          <span style="color:var(--muted)">/mo</span>
+        </div>
+      </div>
+    </div>
+    <div class="whatif-results">
+      <div class="wi-result-item">
+        <div class="wi-result-label">Monthly Cost</div>
+        <div class="wi-result-val" id="wi-cost-14345-sw-172nd-ln-south-miami-heights-fl">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Break-even Rent</div>
+        <div class="wi-result-val" id="wi-be-14345-sw-172nd-ln-south-miami-heights-fl">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Est. Cash Flow</div>
+        <div class="wi-result-val" id="wi-cf-14345-sw-172nd-ln-south-miami-heights-fl" style="font-weight:700">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Assessment</div>
+        <div class="wi-result-val" id="wi-tier-14345-sw-172nd-ln-south-miami-heights-fl">—</div>
+      </div>
+    </div>
+  </div>
+
   
 
   <div class="charts-row">
@@ -740,6 +1074,70 @@ td.small { font-size: 0.75rem; color: var(--muted); }
   </div>
 
   <p class='qualitative'>The most versatile property of today's scan. A 5BD main house + private 1BD/1BA ADU on a 10,000+ sqft corner lot in Kendall for $660K — zero HOA. LTR near break-even at $5,300/mo combined income. The ADU is the differentiator: it converts a cash-flow-negative 5BD into a nearly neutral hold with appreciation exposure. STR hybrid (main house $4,950 + ADU LTR $1,600) generates +$1,506/mo and is the strongest use case. Ideal for owner-occupant with income offset or investor with STR licensing.</p>
+
+  <div class="whatif-box"
+    data-price="660000"
+    data-tax="550"
+    data-hoa="0"
+    data-ins="825"
+    data-maint="300"
+    data-capex="200"
+    data-pm="0"
+    data-vacancy="5"
+    data-slug="15109-sw-71st-ln-miami-kendall">
+    <div class="whatif-title">🔧 What-If Calculator</div>
+    <div class="whatif-grid">
+      <div class="whatif-field">
+        <label>Down Payment</label>
+        <div class="whatif-row">
+          <input type="range" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('15109-sw-71st-ln-miami-kendall')" class="wi-dp-range" id="wi-dp-range-15109-sw-71st-ln-miami-kendall">
+          <input type="number" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('15109-sw-71st-ln-miami-kendall')" class="wi-dp-num" id="wi-dp-num-15109-sw-71st-ln-miami-kendall" style="width:54px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+        <div class="whatif-hint" id="wi-dp-amt-15109-sw-71st-ln-miami-kendall"></div>
+      </div>
+      <div class="whatif-field">
+        <label>Mortgage Rate</label>
+        <div class="whatif-row">
+          <input type="range" min="2" max="12" step="0.05" value="6.01"
+            oninput="recalcSlug('15109-sw-71st-ln-miami-kendall')" class="wi-rate-range" id="wi-rate-range-15109-sw-71st-ln-miami-kendall">
+          <input type="number" min="2" max="12" step="0.01" value="6.01"
+            oninput="recalcSlug('15109-sw-71st-ln-miami-kendall')" class="wi-rate-num" id="wi-rate-num-15109-sw-71st-ln-miami-kendall" style="width:64px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+      </div>
+      <div class="whatif-field">
+        <label>Monthly Rent</label>
+        <div class="whatif-row">
+          <span style="color:var(--muted)">$</span>
+          <input type="number" min="0" step="50" value="5300"
+            oninput="recalcSlug('15109-sw-71st-ln-miami-kendall')" class="wi-rent-num" id="wi-rent-num-15109-sw-71st-ln-miami-kendall" style="width:90px">
+          <span style="color:var(--muted)">/mo</span>
+        </div>
+      </div>
+    </div>
+    <div class="whatif-results">
+      <div class="wi-result-item">
+        <div class="wi-result-label">Monthly Cost</div>
+        <div class="wi-result-val" id="wi-cost-15109-sw-71st-ln-miami-kendall">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Break-even Rent</div>
+        <div class="wi-result-val" id="wi-be-15109-sw-71st-ln-miami-kendall">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Est. Cash Flow</div>
+        <div class="wi-result-val" id="wi-cf-15109-sw-71st-ln-miami-kendall" style="font-weight:700">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Assessment</div>
+        <div class="wi-result-val" id="wi-tier-15109-sw-71st-ln-miami-kendall">—</div>
+      </div>
+    </div>
+  </div>
+
   
     <div class="str-box">
       <div class="str-label">🏖️ STR Scenario (Short-Term Rental)</div>
@@ -789,6 +1187,70 @@ td.small { font-size: 0.75rem; color: var(--muted); }
   </div>
 
   <p class='qualitative'>Brand-new listing in one of Kendall's most popular master-planned communities. At 13% below Hammocks avg ppsf ($296 vs $344/sqft), this is listed below the neighborhood median. Strong tenant demand (gated security + resort amenities attract professional renters). Pure appreciation play — HOA eliminates yield thesis. Best suited for owner-occupant or long-term hold investor who values community infrastructure. Open House March 7 — expect multiple offers if priced correctly.</p>
+
+  <div class="whatif-box"
+    data-price="484999"
+    data-tax="404"
+    data-hoa="380"
+    data-ins="606"
+    data-maint="300"
+    data-capex="200"
+    data-pm="0"
+    data-vacancy="5"
+    data-slug="15328-sw-111th-st-the-hammocks-miami">
+    <div class="whatif-title">🔧 What-If Calculator</div>
+    <div class="whatif-grid">
+      <div class="whatif-field">
+        <label>Down Payment</label>
+        <div class="whatif-row">
+          <input type="range" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('15328-sw-111th-st-the-hammocks-miami')" class="wi-dp-range" id="wi-dp-range-15328-sw-111th-st-the-hammocks-miami">
+          <input type="number" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('15328-sw-111th-st-the-hammocks-miami')" class="wi-dp-num" id="wi-dp-num-15328-sw-111th-st-the-hammocks-miami" style="width:54px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+        <div class="whatif-hint" id="wi-dp-amt-15328-sw-111th-st-the-hammocks-miami"></div>
+      </div>
+      <div class="whatif-field">
+        <label>Mortgage Rate</label>
+        <div class="whatif-row">
+          <input type="range" min="2" max="12" step="0.05" value="6.04"
+            oninput="recalcSlug('15328-sw-111th-st-the-hammocks-miami')" class="wi-rate-range" id="wi-rate-range-15328-sw-111th-st-the-hammocks-miami">
+          <input type="number" min="2" max="12" step="0.01" value="6.04"
+            oninput="recalcSlug('15328-sw-111th-st-the-hammocks-miami')" class="wi-rate-num" id="wi-rate-num-15328-sw-111th-st-the-hammocks-miami" style="width:64px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+      </div>
+      <div class="whatif-field">
+        <label>Monthly Rent</label>
+        <div class="whatif-row">
+          <span style="color:var(--muted)">$</span>
+          <input type="number" min="0" step="50" value="2950"
+            oninput="recalcSlug('15328-sw-111th-st-the-hammocks-miami')" class="wi-rent-num" id="wi-rent-num-15328-sw-111th-st-the-hammocks-miami" style="width:90px">
+          <span style="color:var(--muted)">/mo</span>
+        </div>
+      </div>
+    </div>
+    <div class="whatif-results">
+      <div class="wi-result-item">
+        <div class="wi-result-label">Monthly Cost</div>
+        <div class="wi-result-val" id="wi-cost-15328-sw-111th-st-the-hammocks-miami">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Break-even Rent</div>
+        <div class="wi-result-val" id="wi-be-15328-sw-111th-st-the-hammocks-miami">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Est. Cash Flow</div>
+        <div class="wi-result-val" id="wi-cf-15328-sw-111th-st-the-hammocks-miami" style="font-weight:700">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Assessment</div>
+        <div class="wi-result-val" id="wi-tier-15328-sw-111th-st-the-hammocks-miami">—</div>
+      </div>
+    </div>
+  </div>
+
   
 
   <div class="charts-row">
@@ -824,6 +1286,70 @@ td.small { font-size: 0.75rem; color: var(--muted); }
   </div>
 
   <p class='qualitative'>Largest 4BD on today's scan at 2,628 sqft and $285/sqft (27% below Kendall avg). Zero HOA is a major positive. However, triple-extreme climate risk (Fire Major + Heat Extreme + Wind Extreme), crushing insurance at $938/mo, and outer Kendall West suburban rents make cash-flow positive LTR mathematically impossible at current rates. Value play requires 3%+ appreciation per year to justify carry cost. Consider only if holding 5+ years and comfortable with -$1,465/mo negative carry.</p>
+
+  <div class="whatif-box"
+    data-price="0"
+    data-tax="625"
+    data-hoa="0"
+    data-ins="0"
+    data-maint="300"
+    data-capex="200"
+    data-pm="0"
+    data-vacancy="5"
+    data-slug="15416-sw-99th-ln-miami-kendall">
+    <div class="whatif-title">🔧 What-If Calculator</div>
+    <div class="whatif-grid">
+      <div class="whatif-field">
+        <label>Down Payment</label>
+        <div class="whatif-row">
+          <input type="range" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('15416-sw-99th-ln-miami-kendall')" class="wi-dp-range" id="wi-dp-range-15416-sw-99th-ln-miami-kendall">
+          <input type="number" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('15416-sw-99th-ln-miami-kendall')" class="wi-dp-num" id="wi-dp-num-15416-sw-99th-ln-miami-kendall" style="width:54px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+        <div class="whatif-hint" id="wi-dp-amt-15416-sw-99th-ln-miami-kendall"></div>
+      </div>
+      <div class="whatif-field">
+        <label>Mortgage Rate</label>
+        <div class="whatif-row">
+          <input type="range" min="2" max="12" step="0.05" value="6.5"
+            oninput="recalcSlug('15416-sw-99th-ln-miami-kendall')" class="wi-rate-range" id="wi-rate-range-15416-sw-99th-ln-miami-kendall">
+          <input type="number" min="2" max="12" step="0.01" value="6.5"
+            oninput="recalcSlug('15416-sw-99th-ln-miami-kendall')" class="wi-rate-num" id="wi-rate-num-15416-sw-99th-ln-miami-kendall" style="width:64px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+      </div>
+      <div class="whatif-field">
+        <label>Monthly Rent</label>
+        <div class="whatif-row">
+          <span style="color:var(--muted)">$</span>
+          <input type="number" min="0" step="50" value="4200"
+            oninput="recalcSlug('15416-sw-99th-ln-miami-kendall')" class="wi-rent-num" id="wi-rent-num-15416-sw-99th-ln-miami-kendall" style="width:90px">
+          <span style="color:var(--muted)">/mo</span>
+        </div>
+      </div>
+    </div>
+    <div class="whatif-results">
+      <div class="wi-result-item">
+        <div class="wi-result-label">Monthly Cost</div>
+        <div class="wi-result-val" id="wi-cost-15416-sw-99th-ln-miami-kendall">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Break-even Rent</div>
+        <div class="wi-result-val" id="wi-be-15416-sw-99th-ln-miami-kendall">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Est. Cash Flow</div>
+        <div class="wi-result-val" id="wi-cf-15416-sw-99th-ln-miami-kendall" style="font-weight:700">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Assessment</div>
+        <div class="wi-result-val" id="wi-tier-15416-sw-99th-ln-miami-kendall">—</div>
+      </div>
+    </div>
+  </div>
+
   
 
   <div class="charts-row">
@@ -864,6 +1390,70 @@ td.small { font-size: 0.75rem; color: var(--muted); }
   </div>
 
   <p class='qualitative'>AS-IS listing on an extraordinary 0.35-acre lot in North Miami — lot size alone is rare for the area. 2,455 sqft home is underpriced at $276/sqft relative to its size (typical of AS-IS discount). The zip (33181) has a 8.2% negotiation gap — if purchased at $630K, effective ppsf drops to $257 (right at zip median). STR scenario near break-even at -$213/mo is notable. Sophisticated renovator who addresses AS-IS issues + adds ADU on large lot could dramatically change the yield math.</p>
+
+  <div class="whatif-box"
+    data-price="679000"
+    data-tax="566"
+    data-hoa="0"
+    data-ins="849"
+    data-maint="300"
+    data-capex="200"
+    data-pm="0"
+    data-vacancy="5"
+    data-slug="1775-ne-147th-st-north-miami-fl">
+    <div class="whatif-title">🔧 What-If Calculator</div>
+    <div class="whatif-grid">
+      <div class="whatif-field">
+        <label>Down Payment</label>
+        <div class="whatif-row">
+          <input type="range" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('1775-ne-147th-st-north-miami-fl')" class="wi-dp-range" id="wi-dp-range-1775-ne-147th-st-north-miami-fl">
+          <input type="number" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('1775-ne-147th-st-north-miami-fl')" class="wi-dp-num" id="wi-dp-num-1775-ne-147th-st-north-miami-fl" style="width:54px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+        <div class="whatif-hint" id="wi-dp-amt-1775-ne-147th-st-north-miami-fl"></div>
+      </div>
+      <div class="whatif-field">
+        <label>Mortgage Rate</label>
+        <div class="whatif-row">
+          <input type="range" min="2" max="12" step="0.05" value="5.98"
+            oninput="recalcSlug('1775-ne-147th-st-north-miami-fl')" class="wi-rate-range" id="wi-rate-range-1775-ne-147th-st-north-miami-fl">
+          <input type="number" min="2" max="12" step="0.01" value="5.98"
+            oninput="recalcSlug('1775-ne-147th-st-north-miami-fl')" class="wi-rate-num" id="wi-rate-num-1775-ne-147th-st-north-miami-fl" style="width:64px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+      </div>
+      <div class="whatif-field">
+        <label>Monthly Rent</label>
+        <div class="whatif-row">
+          <span style="color:var(--muted)">$</span>
+          <input type="number" min="0" step="50" value="3600"
+            oninput="recalcSlug('1775-ne-147th-st-north-miami-fl')" class="wi-rent-num" id="wi-rent-num-1775-ne-147th-st-north-miami-fl" style="width:90px">
+          <span style="color:var(--muted)">/mo</span>
+        </div>
+      </div>
+    </div>
+    <div class="whatif-results">
+      <div class="wi-result-item">
+        <div class="wi-result-label">Monthly Cost</div>
+        <div class="wi-result-val" id="wi-cost-1775-ne-147th-st-north-miami-fl">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Break-even Rent</div>
+        <div class="wi-result-val" id="wi-be-1775-ne-147th-st-north-miami-fl">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Est. Cash Flow</div>
+        <div class="wi-result-val" id="wi-cf-1775-ne-147th-st-north-miami-fl" style="font-weight:700">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Assessment</div>
+        <div class="wi-result-val" id="wi-tier-1775-ne-147th-st-north-miami-fl">—</div>
+      </div>
+    </div>
+  </div>
+
   
 
   <div class="charts-row">
@@ -899,6 +1489,70 @@ td.small { font-size: 0.75rem; color: var(--muted); }
   </div>
 
   <p class='qualitative'>Renovation and STR play on a canal-front oversized lot in Cutler Bay. At $317/sqft (20% below avg), the land value alone justifies attention — 15,640 sqft lots in Miami-Dade are rare and increasingly premium. Renovation required before rental income is possible; budget $40-80K and factor Major flood insurance costs (~$500+/mo). STR post-renovation at $837/mo cash flow makes the math work. LTR buyers: wait for comps to show canal-front premium in this sub-market before committing.</p>
+
+  <div class="whatif-box"
+    data-price="524900"
+    data-tax="437"
+    data-hoa="0"
+    data-ins="656"
+    data-maint="300"
+    data-capex="200"
+    data-pm="0"
+    data-vacancy="5"
+    data-slug="18451-sw-90th-ave-cutler-bay">
+    <div class="whatif-title">🔧 What-If Calculator</div>
+    <div class="whatif-grid">
+      <div class="whatif-field">
+        <label>Down Payment</label>
+        <div class="whatif-row">
+          <input type="range" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('18451-sw-90th-ave-cutler-bay')" class="wi-dp-range" id="wi-dp-range-18451-sw-90th-ave-cutler-bay">
+          <input type="number" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('18451-sw-90th-ave-cutler-bay')" class="wi-dp-num" id="wi-dp-num-18451-sw-90th-ave-cutler-bay" style="width:54px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+        <div class="whatif-hint" id="wi-dp-amt-18451-sw-90th-ave-cutler-bay"></div>
+      </div>
+      <div class="whatif-field">
+        <label>Mortgage Rate</label>
+        <div class="whatif-row">
+          <input type="range" min="2" max="12" step="0.05" value="6.01"
+            oninput="recalcSlug('18451-sw-90th-ave-cutler-bay')" class="wi-rate-range" id="wi-rate-range-18451-sw-90th-ave-cutler-bay">
+          <input type="number" min="2" max="12" step="0.01" value="6.01"
+            oninput="recalcSlug('18451-sw-90th-ave-cutler-bay')" class="wi-rate-num" id="wi-rate-num-18451-sw-90th-ave-cutler-bay" style="width:64px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+      </div>
+      <div class="whatif-field">
+        <label>Monthly Rent</label>
+        <div class="whatif-row">
+          <span style="color:var(--muted)">$</span>
+          <input type="number" min="0" step="50" value="3687"
+            oninput="recalcSlug('18451-sw-90th-ave-cutler-bay')" class="wi-rent-num" id="wi-rent-num-18451-sw-90th-ave-cutler-bay" style="width:90px">
+          <span style="color:var(--muted)">/mo</span>
+        </div>
+      </div>
+    </div>
+    <div class="whatif-results">
+      <div class="wi-result-item">
+        <div class="wi-result-label">Monthly Cost</div>
+        <div class="wi-result-val" id="wi-cost-18451-sw-90th-ave-cutler-bay">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Break-even Rent</div>
+        <div class="wi-result-val" id="wi-be-18451-sw-90th-ave-cutler-bay">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Est. Cash Flow</div>
+        <div class="wi-result-val" id="wi-cf-18451-sw-90th-ave-cutler-bay" style="font-weight:700">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Assessment</div>
+        <div class="wi-result-val" id="wi-tier-18451-sw-90th-ave-cutler-bay">—</div>
+      </div>
+    </div>
+  </div>
+
   
     <div class="str-box">
       <div class="str-label">🏖️ STR Scenario (Short-Term Rental)</div>
@@ -943,6 +1597,70 @@ td.small { font-size: 0.75rem; color: var(--muted); }
   </div>
 
   <p class='qualitative'>3BD/2BA in South Miami Heights with clean flood/fire risk profile and solid lot (7,600 sqft). Pure appreciation play — the $1,301/mo negative carry requires 3%+ annual appreciation to justify. Adjacent to the 9711 Caribbean Blvd corridor and benefits from Cutler Bay area tailwinds. Negotiate to $503K (3% below list) given 89-day avg DOM and balanced market conditions.</p>
+
+  <div class="whatif-box"
+    data-price="0"
+    data-tax="0"
+    data-hoa="0"
+    data-ins="0"
+    data-maint="0"
+    data-capex="0"
+    data-pm="0"
+    data-vacancy="5"
+    data-slug="18670-sw-123rd-ct-miami-smh">
+    <div class="whatif-title">🔧 What-If Calculator</div>
+    <div class="whatif-grid">
+      <div class="whatif-field">
+        <label>Down Payment</label>
+        <div class="whatif-row">
+          <input type="range" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('18670-sw-123rd-ct-miami-smh')" class="wi-dp-range" id="wi-dp-range-18670-sw-123rd-ct-miami-smh">
+          <input type="number" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('18670-sw-123rd-ct-miami-smh')" class="wi-dp-num" id="wi-dp-num-18670-sw-123rd-ct-miami-smh" style="width:54px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+        <div class="whatif-hint" id="wi-dp-amt-18670-sw-123rd-ct-miami-smh"></div>
+      </div>
+      <div class="whatif-field">
+        <label>Mortgage Rate</label>
+        <div class="whatif-row">
+          <input type="range" min="2" max="12" step="0.05" value="6.5"
+            oninput="recalcSlug('18670-sw-123rd-ct-miami-smh')" class="wi-rate-range" id="wi-rate-range-18670-sw-123rd-ct-miami-smh">
+          <input type="number" min="2" max="12" step="0.01" value="6.5"
+            oninput="recalcSlug('18670-sw-123rd-ct-miami-smh')" class="wi-rate-num" id="wi-rate-num-18670-sw-123rd-ct-miami-smh" style="width:64px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+      </div>
+      <div class="whatif-field">
+        <label>Monthly Rent</label>
+        <div class="whatif-row">
+          <span style="color:var(--muted)">$</span>
+          <input type="number" min="0" step="50" value="0"
+            oninput="recalcSlug('18670-sw-123rd-ct-miami-smh')" class="wi-rent-num" id="wi-rent-num-18670-sw-123rd-ct-miami-smh" style="width:90px">
+          <span style="color:var(--muted)">/mo</span>
+        </div>
+      </div>
+    </div>
+    <div class="whatif-results">
+      <div class="wi-result-item">
+        <div class="wi-result-label">Monthly Cost</div>
+        <div class="wi-result-val" id="wi-cost-18670-sw-123rd-ct-miami-smh">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Break-even Rent</div>
+        <div class="wi-result-val" id="wi-be-18670-sw-123rd-ct-miami-smh">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Est. Cash Flow</div>
+        <div class="wi-result-val" id="wi-cf-18670-sw-123rd-ct-miami-smh" style="font-weight:700">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Assessment</div>
+        <div class="wi-result-val" id="wi-tier-18670-sw-123rd-ct-miami-smh">—</div>
+      </div>
+    </div>
+  </div>
+
   
 
   <div class="charts-row">
@@ -983,6 +1701,70 @@ td.small { font-size: 0.75rem; color: var(--muted); }
   </div>
 
   <p class='qualitative'>Appreciation and equity play in a South Miami Heights market showing +9.5% YoY (Jan 2026). The largest house in today's analysis at 2,124 sqft with waterfront lake lot, NO HOA, CBS construction, and premium impact glass — buy quality is excellent. Cash-flow negative thesis relies on continued SMH appreciation (well-supported) and eventual rate refinance reducing monthly costs. The 124 DOM and $18K price reduction signal motivated seller — room for negotiation toward $575K (would reduce B/E to $4,700, improve cash flow to -$1,200).</p>
+
+  <div class="whatif-box"
+    data-price="599999"
+    data-tax="500"
+    data-hoa="0"
+    data-ins="750"
+    data-maint="300"
+    data-capex="200"
+    data-pm="0"
+    data-vacancy="5"
+    data-slug="19050-sw-125th-ave-south-miami-heights">
+    <div class="whatif-title">🔧 What-If Calculator</div>
+    <div class="whatif-grid">
+      <div class="whatif-field">
+        <label>Down Payment</label>
+        <div class="whatif-row">
+          <input type="range" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('19050-sw-125th-ave-south-miami-heights')" class="wi-dp-range" id="wi-dp-range-19050-sw-125th-ave-south-miami-heights">
+          <input type="number" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('19050-sw-125th-ave-south-miami-heights')" class="wi-dp-num" id="wi-dp-num-19050-sw-125th-ave-south-miami-heights" style="width:54px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+        <div class="whatif-hint" id="wi-dp-amt-19050-sw-125th-ave-south-miami-heights"></div>
+      </div>
+      <div class="whatif-field">
+        <label>Mortgage Rate</label>
+        <div class="whatif-row">
+          <input type="range" min="2" max="12" step="0.05" value="6.04"
+            oninput="recalcSlug('19050-sw-125th-ave-south-miami-heights')" class="wi-rate-range" id="wi-rate-range-19050-sw-125th-ave-south-miami-heights">
+          <input type="number" min="2" max="12" step="0.01" value="6.04"
+            oninput="recalcSlug('19050-sw-125th-ave-south-miami-heights')" class="wi-rate-num" id="wi-rate-num-19050-sw-125th-ave-south-miami-heights" style="width:64px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+      </div>
+      <div class="whatif-field">
+        <label>Monthly Rent</label>
+        <div class="whatif-row">
+          <span style="color:var(--muted)">$</span>
+          <input type="number" min="0" step="50" value="3450"
+            oninput="recalcSlug('19050-sw-125th-ave-south-miami-heights')" class="wi-rent-num" id="wi-rent-num-19050-sw-125th-ave-south-miami-heights" style="width:90px">
+          <span style="color:var(--muted)">/mo</span>
+        </div>
+      </div>
+    </div>
+    <div class="whatif-results">
+      <div class="wi-result-item">
+        <div class="wi-result-label">Monthly Cost</div>
+        <div class="wi-result-val" id="wi-cost-19050-sw-125th-ave-south-miami-heights">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Break-even Rent</div>
+        <div class="wi-result-val" id="wi-be-19050-sw-125th-ave-south-miami-heights">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Est. Cash Flow</div>
+        <div class="wi-result-val" id="wi-cf-19050-sw-125th-ave-south-miami-heights" style="font-weight:700">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Assessment</div>
+        <div class="wi-result-val" id="wi-tier-19050-sw-125th-ave-south-miami-heights">—</div>
+      </div>
+    </div>
+  </div>
+
   
 
   <div class="charts-row">
@@ -1023,6 +1805,70 @@ td.small { font-size: 0.75rem; color: var(--muted); }
   </div>
 
   <p class='qualitative'>Most compelling deal score today (75/100): exceptional 49% ppsf discount vs Coral Way avg ($264 vs $517/sqft) with NO HOA and barely cash-flow positive math — VERY rare in Miami. However, this is almost certainly an AS-IS/distressed/foreclosure sale. Serious condition inspection required before offer; title complexity possible. If condition is solid, this is a generational buy in one of Miami's most desirable neighborhoods (5 min Brickell, near beaches). If condition requires $100K+ renovation, recalculate at $620K all-in: B/E rises to ~$4,900/mo → cash-flow negative.</p>
+
+  <div class="whatif-box"
+    data-price="519900"
+    data-tax="433"
+    data-hoa="0"
+    data-ins="650"
+    data-maint="300"
+    data-capex="200"
+    data-pm="0"
+    data-vacancy="5"
+    data-slug="2220-sw-16th-ter-coral-way-miami">
+    <div class="whatif-title">🔧 What-If Calculator</div>
+    <div class="whatif-grid">
+      <div class="whatif-field">
+        <label>Down Payment</label>
+        <div class="whatif-row">
+          <input type="range" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('2220-sw-16th-ter-coral-way-miami')" class="wi-dp-range" id="wi-dp-range-2220-sw-16th-ter-coral-way-miami">
+          <input type="number" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('2220-sw-16th-ter-coral-way-miami')" class="wi-dp-num" id="wi-dp-num-2220-sw-16th-ter-coral-way-miami" style="width:54px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+        <div class="whatif-hint" id="wi-dp-amt-2220-sw-16th-ter-coral-way-miami"></div>
+      </div>
+      <div class="whatif-field">
+        <label>Mortgage Rate</label>
+        <div class="whatif-row">
+          <input type="range" min="2" max="12" step="0.05" value="6.04"
+            oninput="recalcSlug('2220-sw-16th-ter-coral-way-miami')" class="wi-rate-range" id="wi-rate-range-2220-sw-16th-ter-coral-way-miami">
+          <input type="number" min="2" max="12" step="0.01" value="6.04"
+            oninput="recalcSlug('2220-sw-16th-ter-coral-way-miami')" class="wi-rate-num" id="wi-rate-num-2220-sw-16th-ter-coral-way-miami" style="width:64px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+      </div>
+      <div class="whatif-field">
+        <label>Monthly Rent</label>
+        <div class="whatif-row">
+          <span style="color:var(--muted)">$</span>
+          <input type="number" min="0" step="50" value="4400"
+            oninput="recalcSlug('2220-sw-16th-ter-coral-way-miami')" class="wi-rent-num" id="wi-rent-num-2220-sw-16th-ter-coral-way-miami" style="width:90px">
+          <span style="color:var(--muted)">/mo</span>
+        </div>
+      </div>
+    </div>
+    <div class="whatif-results">
+      <div class="wi-result-item">
+        <div class="wi-result-label">Monthly Cost</div>
+        <div class="wi-result-val" id="wi-cost-2220-sw-16th-ter-coral-way-miami">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Break-even Rent</div>
+        <div class="wi-result-val" id="wi-be-2220-sw-16th-ter-coral-way-miami">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Est. Cash Flow</div>
+        <div class="wi-result-val" id="wi-cf-2220-sw-16th-ter-coral-way-miami" style="font-weight:700">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Assessment</div>
+        <div class="wi-result-val" id="wi-tier-2220-sw-16th-ter-coral-way-miami">—</div>
+      </div>
+    </div>
+  </div>
+
   
 
   <div class="charts-row">
@@ -1058,6 +1904,70 @@ td.small { font-size: 0.75rem; color: var(--muted); }
   </div>
 
   <p class='qualitative'>Best-in-class physical property — 2021 roof, full impact windows, quartz counters, 8/10 school — but Flood Factor MAJOR (57% in 30 yrs) mandates ~$600/mo flood insurance that makes any yield thesis untenable at $550K. Cash-flow negative by $1,757/mo even with solid rental demand. Could be compelling if negotiated aggressively to ~$490K AND if buyer occupies rather than rents. Pure appreciation risk with forced flood insurance carrying cost.</p>
+
+  <div class="whatif-box"
+    data-price="0"
+    data-tax="0"
+    data-hoa="0"
+    data-ins="0"
+    data-maint="0"
+    data-capex="0"
+    data-pm="0"
+    data-vacancy="5"
+    data-slug="22534-sw-114th-pl-miami-princeton">
+    <div class="whatif-title">🔧 What-If Calculator</div>
+    <div class="whatif-grid">
+      <div class="whatif-field">
+        <label>Down Payment</label>
+        <div class="whatif-row">
+          <input type="range" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('22534-sw-114th-pl-miami-princeton')" class="wi-dp-range" id="wi-dp-range-22534-sw-114th-pl-miami-princeton">
+          <input type="number" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('22534-sw-114th-pl-miami-princeton')" class="wi-dp-num" id="wi-dp-num-22534-sw-114th-pl-miami-princeton" style="width:54px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+        <div class="whatif-hint" id="wi-dp-amt-22534-sw-114th-pl-miami-princeton"></div>
+      </div>
+      <div class="whatif-field">
+        <label>Mortgage Rate</label>
+        <div class="whatif-row">
+          <input type="range" min="2" max="12" step="0.05" value="6.5"
+            oninput="recalcSlug('22534-sw-114th-pl-miami-princeton')" class="wi-rate-range" id="wi-rate-range-22534-sw-114th-pl-miami-princeton">
+          <input type="number" min="2" max="12" step="0.01" value="6.5"
+            oninput="recalcSlug('22534-sw-114th-pl-miami-princeton')" class="wi-rate-num" id="wi-rate-num-22534-sw-114th-pl-miami-princeton" style="width:64px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+      </div>
+      <div class="whatif-field">
+        <label>Monthly Rent</label>
+        <div class="whatif-row">
+          <span style="color:var(--muted)">$</span>
+          <input type="number" min="0" step="50" value="3400"
+            oninput="recalcSlug('22534-sw-114th-pl-miami-princeton')" class="wi-rent-num" id="wi-rent-num-22534-sw-114th-pl-miami-princeton" style="width:90px">
+          <span style="color:var(--muted)">/mo</span>
+        </div>
+      </div>
+    </div>
+    <div class="whatif-results">
+      <div class="wi-result-item">
+        <div class="wi-result-label">Monthly Cost</div>
+        <div class="wi-result-val" id="wi-cost-22534-sw-114th-pl-miami-princeton">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Break-even Rent</div>
+        <div class="wi-result-val" id="wi-be-22534-sw-114th-pl-miami-princeton">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Est. Cash Flow</div>
+        <div class="wi-result-val" id="wi-cf-22534-sw-114th-pl-miami-princeton" style="font-weight:700">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Assessment</div>
+        <div class="wi-result-val" id="wi-tier-22534-sw-114th-pl-miami-princeton">—</div>
+      </div>
+    </div>
+  </div>
+
   
 
   <div class="charts-row">
@@ -1098,6 +2008,70 @@ td.small { font-size: 0.75rem; color: var(--muted); }
   </div>
 
   <p class='qualitative'>Pure appreciation thesis in one of the Bay Area's tightest tech-adjacent markets. Walking distance to Google Sunnyvale campus, 5-min to Caltrain and Highways 101/85/237. Rate drop to 5% range (Freddie Mac Feb 26) meaningfully reduces monthly payment — at 5.95% vs 6.75% 12 months ago, monthly savings ~$620/mo. Hot market (65% accept within 2 weeks) means limited negotiation room. Cash-flow negative at -$3,921/mo; suitable for buyer with long-horizon appreciation thesis and tech-sector income.</p>
+
+  <div class="whatif-box"
+    data-price="1388800"
+    data-tax="1273"
+    data-hoa="450"
+    data-ins="578"
+    data-maint="300"
+    data-capex="200"
+    data-pm="0"
+    data-vacancy="5"
+    data-slug="227-ada-ave-unit-b-mountain-view-ca">
+    <div class="whatif-title">🔧 What-If Calculator</div>
+    <div class="whatif-grid">
+      <div class="whatif-field">
+        <label>Down Payment</label>
+        <div class="whatif-row">
+          <input type="range" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('227-ada-ave-unit-b-mountain-view-ca')" class="wi-dp-range" id="wi-dp-range-227-ada-ave-unit-b-mountain-view-ca">
+          <input type="number" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('227-ada-ave-unit-b-mountain-view-ca')" class="wi-dp-num" id="wi-dp-num-227-ada-ave-unit-b-mountain-view-ca" style="width:54px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+        <div class="whatif-hint" id="wi-dp-amt-227-ada-ave-unit-b-mountain-view-ca"></div>
+      </div>
+      <div class="whatif-field">
+        <label>Mortgage Rate</label>
+        <div class="whatif-row">
+          <input type="range" min="2" max="12" step="0.05" value="5.95"
+            oninput="recalcSlug('227-ada-ave-unit-b-mountain-view-ca')" class="wi-rate-range" id="wi-rate-range-227-ada-ave-unit-b-mountain-view-ca">
+          <input type="number" min="2" max="12" step="0.01" value="5.95"
+            oninput="recalcSlug('227-ada-ave-unit-b-mountain-view-ca')" class="wi-rate-num" id="wi-rate-num-227-ada-ave-unit-b-mountain-view-ca" style="width:64px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+      </div>
+      <div class="whatif-field">
+        <label>Monthly Rent</label>
+        <div class="whatif-row">
+          <span style="color:var(--muted)">$</span>
+          <input type="number" min="0" step="50" value="5500"
+            oninput="recalcSlug('227-ada-ave-unit-b-mountain-view-ca')" class="wi-rent-num" id="wi-rent-num-227-ada-ave-unit-b-mountain-view-ca" style="width:90px">
+          <span style="color:var(--muted)">/mo</span>
+        </div>
+      </div>
+    </div>
+    <div class="whatif-results">
+      <div class="wi-result-item">
+        <div class="wi-result-label">Monthly Cost</div>
+        <div class="wi-result-val" id="wi-cost-227-ada-ave-unit-b-mountain-view-ca">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Break-even Rent</div>
+        <div class="wi-result-val" id="wi-be-227-ada-ave-unit-b-mountain-view-ca">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Est. Cash Flow</div>
+        <div class="wi-result-val" id="wi-cf-227-ada-ave-unit-b-mountain-view-ca" style="font-weight:700">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Assessment</div>
+        <div class="wi-result-val" id="wi-tier-227-ada-ave-unit-b-mountain-view-ca">—</div>
+      </div>
+    </div>
+  </div>
+
   
 
   <div class="charts-row">
@@ -1133,6 +2107,70 @@ td.small { font-size: 0.75rem; color: var(--muted); }
   </div>
 
   <p class='qualitative'>Unique income-play with two on-site efficiencies that could turn this cash-flow negative SFH positive ($4,200/mo combined vs $3,761 break-even). Near MIA airport supports steady tenant demand; low flood risk is a standout for FL. School ratings poor — limited family buyer demand limits resale upside. Best as a creative income property, not a pure appreciation play.</p>
+
+  <div class="whatif-box"
+    data-price="0"
+    data-tax="0"
+    data-hoa="0"
+    data-ins="0"
+    data-maint="0"
+    data-capex="0"
+    data-pm="0"
+    data-vacancy="5"
+    data-slug="3049-nw-51st-st-miami-nw">
+    <div class="whatif-title">🔧 What-If Calculator</div>
+    <div class="whatif-grid">
+      <div class="whatif-field">
+        <label>Down Payment</label>
+        <div class="whatif-row">
+          <input type="range" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('3049-nw-51st-st-miami-nw')" class="wi-dp-range" id="wi-dp-range-3049-nw-51st-st-miami-nw">
+          <input type="number" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('3049-nw-51st-st-miami-nw')" class="wi-dp-num" id="wi-dp-num-3049-nw-51st-st-miami-nw" style="width:54px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+        <div class="whatif-hint" id="wi-dp-amt-3049-nw-51st-st-miami-nw"></div>
+      </div>
+      <div class="whatif-field">
+        <label>Mortgage Rate</label>
+        <div class="whatif-row">
+          <input type="range" min="2" max="12" step="0.05" value="6.5"
+            oninput="recalcSlug('3049-nw-51st-st-miami-nw')" class="wi-rate-range" id="wi-rate-range-3049-nw-51st-st-miami-nw">
+          <input type="number" min="2" max="12" step="0.01" value="6.5"
+            oninput="recalcSlug('3049-nw-51st-st-miami-nw')" class="wi-rate-num" id="wi-rate-num-3049-nw-51st-st-miami-nw" style="width:64px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+      </div>
+      <div class="whatif-field">
+        <label>Monthly Rent</label>
+        <div class="whatif-row">
+          <span style="color:var(--muted)">$</span>
+          <input type="number" min="0" step="50" value="0"
+            oninput="recalcSlug('3049-nw-51st-st-miami-nw')" class="wi-rent-num" id="wi-rent-num-3049-nw-51st-st-miami-nw" style="width:90px">
+          <span style="color:var(--muted)">/mo</span>
+        </div>
+      </div>
+    </div>
+    <div class="whatif-results">
+      <div class="wi-result-item">
+        <div class="wi-result-label">Monthly Cost</div>
+        <div class="wi-result-val" id="wi-cost-3049-nw-51st-st-miami-nw">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Break-even Rent</div>
+        <div class="wi-result-val" id="wi-be-3049-nw-51st-st-miami-nw">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Est. Cash Flow</div>
+        <div class="wi-result-val" id="wi-cf-3049-nw-51st-st-miami-nw" style="font-weight:700">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Assessment</div>
+        <div class="wi-result-val" id="wi-tier-3049-nw-51st-st-miami-nw">—</div>
+      </div>
+    </div>
+  </div>
+
   
 
   <div class="charts-row">
@@ -1173,6 +2211,70 @@ td.small { font-size: 0.75rem; color: var(--muted); }
   </div>
 
   <p class='qualitative'>Allapattah is a SOUL.md-designated up-and-coming Miami neighborhood. At $245/sqft vs $381/sqft neighborhood average (35.7% below), this is the sharpest price discount found in today's scan. The single bathroom is a meaningful limitation reducing rental demand and resale value — but an investor willing to add a 2nd bath via renovation could unlock significant equity. Near Arts District, Wynwood, MIA — strong tenant demand corridor. Cash-flow negative but appreciation thesis is compelling.</p>
+
+  <div class="whatif-box"
+    data-price="389000"
+    data-tax="324"
+    data-hoa="0"
+    data-ins="486"
+    data-maint="300"
+    data-capex="200"
+    data-pm="0"
+    data-vacancy="5"
+    data-slug="3560-nw-35th-st-allapattah-fl">
+    <div class="whatif-title">🔧 What-If Calculator</div>
+    <div class="whatif-grid">
+      <div class="whatif-field">
+        <label>Down Payment</label>
+        <div class="whatif-row">
+          <input type="range" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('3560-nw-35th-st-allapattah-fl')" class="wi-dp-range" id="wi-dp-range-3560-nw-35th-st-allapattah-fl">
+          <input type="number" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('3560-nw-35th-st-allapattah-fl')" class="wi-dp-num" id="wi-dp-num-3560-nw-35th-st-allapattah-fl" style="width:54px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+        <div class="whatif-hint" id="wi-dp-amt-3560-nw-35th-st-allapattah-fl"></div>
+      </div>
+      <div class="whatif-field">
+        <label>Mortgage Rate</label>
+        <div class="whatif-row">
+          <input type="range" min="2" max="12" step="0.05" value="5.98"
+            oninput="recalcSlug('3560-nw-35th-st-allapattah-fl')" class="wi-rate-range" id="wi-rate-range-3560-nw-35th-st-allapattah-fl">
+          <input type="number" min="2" max="12" step="0.01" value="5.98"
+            oninput="recalcSlug('3560-nw-35th-st-allapattah-fl')" class="wi-rate-num" id="wi-rate-num-3560-nw-35th-st-allapattah-fl" style="width:64px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+      </div>
+      <div class="whatif-field">
+        <label>Monthly Rent</label>
+        <div class="whatif-row">
+          <span style="color:var(--muted)">$</span>
+          <input type="number" min="0" step="50" value="2600"
+            oninput="recalcSlug('3560-nw-35th-st-allapattah-fl')" class="wi-rent-num" id="wi-rent-num-3560-nw-35th-st-allapattah-fl" style="width:90px">
+          <span style="color:var(--muted)">/mo</span>
+        </div>
+      </div>
+    </div>
+    <div class="whatif-results">
+      <div class="wi-result-item">
+        <div class="wi-result-label">Monthly Cost</div>
+        <div class="wi-result-val" id="wi-cost-3560-nw-35th-st-allapattah-fl">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Break-even Rent</div>
+        <div class="wi-result-val" id="wi-be-3560-nw-35th-st-allapattah-fl">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Est. Cash Flow</div>
+        <div class="wi-result-val" id="wi-cf-3560-nw-35th-st-allapattah-fl" style="font-weight:700">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Assessment</div>
+        <div class="wi-result-val" id="wi-tier-3560-nw-35th-st-allapattah-fl">—</div>
+      </div>
+    </div>
+  </div>
+
   
 
   <div class="charts-row">
@@ -1213,6 +2315,70 @@ td.small { font-size: 0.75rem; color: var(--muted); }
   </div>
 
   <p class='qualitative'>Pure appreciation play — break-even rent ($12,148) is 3x market rate ($3,962). HOA at $1,543/mo is a major red flag. Even STR at $220/night × 18 nights barely moves the needle (-$7,581/mo). Bull case: 2024 construction, bayfront views, STR flexibility, CA→Miami migration tailwind. Climate risks (Major flood, Extreme wind) add long-term insurance exposure — luxury bet only, zero yield.</p>
+
+  <div class="whatif-box"
+    data-price="1385000"
+    data-tax="1994"
+    data-hoa="1543"
+    data-ins="854"
+    data-maint="300"
+    data-capex="200"
+    data-pm="0"
+    data-vacancy="5"
+    data-slug="398-ne-5th-st-3811-miami">
+    <div class="whatif-title">🔧 What-If Calculator</div>
+    <div class="whatif-grid">
+      <div class="whatif-field">
+        <label>Down Payment</label>
+        <div class="whatif-row">
+          <input type="range" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('398-ne-5th-st-3811-miami')" class="wi-dp-range" id="wi-dp-range-398-ne-5th-st-3811-miami">
+          <input type="number" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('398-ne-5th-st-3811-miami')" class="wi-dp-num" id="wi-dp-num-398-ne-5th-st-3811-miami" style="width:54px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+        <div class="whatif-hint" id="wi-dp-amt-398-ne-5th-st-3811-miami"></div>
+      </div>
+      <div class="whatif-field">
+        <label>Mortgage Rate</label>
+        <div class="whatif-row">
+          <input type="range" min="2" max="12" step="0.05" value="6.01"
+            oninput="recalcSlug('398-ne-5th-st-3811-miami')" class="wi-rate-range" id="wi-rate-range-398-ne-5th-st-3811-miami">
+          <input type="number" min="2" max="12" step="0.01" value="6.01"
+            oninput="recalcSlug('398-ne-5th-st-3811-miami')" class="wi-rate-num" id="wi-rate-num-398-ne-5th-st-3811-miami" style="width:64px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+      </div>
+      <div class="whatif-field">
+        <label>Monthly Rent</label>
+        <div class="whatif-row">
+          <span style="color:var(--muted)">$</span>
+          <input type="number" min="0" step="50" value="3962"
+            oninput="recalcSlug('398-ne-5th-st-3811-miami')" class="wi-rent-num" id="wi-rent-num-398-ne-5th-st-3811-miami" style="width:90px">
+          <span style="color:var(--muted)">/mo</span>
+        </div>
+      </div>
+    </div>
+    <div class="whatif-results">
+      <div class="wi-result-item">
+        <div class="wi-result-label">Monthly Cost</div>
+        <div class="wi-result-val" id="wi-cost-398-ne-5th-st-3811-miami">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Break-even Rent</div>
+        <div class="wi-result-val" id="wi-be-398-ne-5th-st-3811-miami">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Est. Cash Flow</div>
+        <div class="wi-result-val" id="wi-cf-398-ne-5th-st-3811-miami" style="font-weight:700">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Assessment</div>
+        <div class="wi-result-val" id="wi-tier-398-ne-5th-st-3811-miami">—</div>
+      </div>
+    </div>
+  </div>
+
   
     <div class="str-box">
       <div class="str-label">🏖️ STR Scenario (Short-Term Rental)</div>
@@ -1257,6 +2423,70 @@ td.small { font-size: 0.75rem; color: var(--muted); }
   </div>
 
   <p class='qualitative'>WATCH-ONLY. The 19% price/sqft discount vs Brickell avg ($488 vs $603) is the sole deal signal — but everything else is a red flag. (1) HOA at $1,445/mo is a structural cash-flow killer. (2) The building's own rental history shows declining rents ($4,500→$3,500 in 6 months) — and even $3,500 failed to rent. (3) 20 units for sale in this 24-story building signals deep supply overhang. (4) Previously listed at $620K Jul-Oct 2025 without selling; current list is $10K higher — wrong direction. (5) Extreme climate risk on the Miami River (flood + wind). Break-even rent ($6,954) is 2x achievable market rent ($3,500). WATCH: flag for re-analysis if price drops to $490-500K range, where break-even improves dramatically.</p>
+
+  <div class="whatif-box"
+    data-price="629000"
+    data-tax="736"
+    data-hoa="1445"
+    data-ins="786"
+    data-maint="300"
+    data-capex="200"
+    data-pm="0"
+    data-vacancy="5"
+    data-slug="41-se-5th-st-1116-miami">
+    <div class="whatif-title">🔧 What-If Calculator</div>
+    <div class="whatif-grid">
+      <div class="whatif-field">
+        <label>Down Payment</label>
+        <div class="whatif-row">
+          <input type="range" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('41-se-5th-st-1116-miami')" class="wi-dp-range" id="wi-dp-range-41-se-5th-st-1116-miami">
+          <input type="number" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('41-se-5th-st-1116-miami')" class="wi-dp-num" id="wi-dp-num-41-se-5th-st-1116-miami" style="width:54px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+        <div class="whatif-hint" id="wi-dp-amt-41-se-5th-st-1116-miami"></div>
+      </div>
+      <div class="whatif-field">
+        <label>Mortgage Rate</label>
+        <div class="whatif-row">
+          <input type="range" min="2" max="12" step="0.05" value="6.38"
+            oninput="recalcSlug('41-se-5th-st-1116-miami')" class="wi-rate-range" id="wi-rate-range-41-se-5th-st-1116-miami">
+          <input type="number" min="2" max="12" step="0.01" value="6.38"
+            oninput="recalcSlug('41-se-5th-st-1116-miami')" class="wi-rate-num" id="wi-rate-num-41-se-5th-st-1116-miami" style="width:64px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+      </div>
+      <div class="whatif-field">
+        <label>Monthly Rent</label>
+        <div class="whatif-row">
+          <span style="color:var(--muted)">$</span>
+          <input type="number" min="0" step="50" value="3500"
+            oninput="recalcSlug('41-se-5th-st-1116-miami')" class="wi-rent-num" id="wi-rent-num-41-se-5th-st-1116-miami" style="width:90px">
+          <span style="color:var(--muted)">/mo</span>
+        </div>
+      </div>
+    </div>
+    <div class="whatif-results">
+      <div class="wi-result-item">
+        <div class="wi-result-label">Monthly Cost</div>
+        <div class="wi-result-val" id="wi-cost-41-se-5th-st-1116-miami">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Break-even Rent</div>
+        <div class="wi-result-val" id="wi-be-41-se-5th-st-1116-miami">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Est. Cash Flow</div>
+        <div class="wi-result-val" id="wi-cf-41-se-5th-st-1116-miami" style="font-weight:700">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Assessment</div>
+        <div class="wi-result-val" id="wi-tier-41-se-5th-st-1116-miami">—</div>
+      </div>
+    </div>
+  </div>
+
   
     <div class="str-box">
       <div class="str-label">🏖️ STR Scenario (Short-Term Rental)</div>
@@ -1301,6 +2531,70 @@ td.small { font-size: 0.75rem; color: var(--muted); }
   </div>
 
   <p class='qualitative'>Classic AS-IS distressed play adjacent to Coral Gables and Brickell corridor — exceptional $/sqft at 32% below neighborhood avg, minimal flood/fire risk (unlike most FL deals), strong post-reno rental market supported by Redfin at $4,495/mo. Cash-only constraint opens door to aggressive negotiation (recent area offer of $375K on similar 4BD accepted for $400K — 6% below list average here). Best thesis: cash purchase at $500-520K, $60-80K reno, rent to young professionals working Brickell/Downtown at $4,400-4,600/mo.</p>
+
+  <div class="whatif-box"
+    data-price="0"
+    data-tax="466"
+    data-hoa="0"
+    data-ins="0"
+    data-maint="300"
+    data-capex="200"
+    data-pm="0"
+    data-vacancy="5"
+    data-slug="5260-sw-2nd-st-coral-gables">
+    <div class="whatif-title">🔧 What-If Calculator</div>
+    <div class="whatif-grid">
+      <div class="whatif-field">
+        <label>Down Payment</label>
+        <div class="whatif-row">
+          <input type="range" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('5260-sw-2nd-st-coral-gables')" class="wi-dp-range" id="wi-dp-range-5260-sw-2nd-st-coral-gables">
+          <input type="number" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('5260-sw-2nd-st-coral-gables')" class="wi-dp-num" id="wi-dp-num-5260-sw-2nd-st-coral-gables" style="width:54px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+        <div class="whatif-hint" id="wi-dp-amt-5260-sw-2nd-st-coral-gables"></div>
+      </div>
+      <div class="whatif-field">
+        <label>Mortgage Rate</label>
+        <div class="whatif-row">
+          <input type="range" min="2" max="12" step="0.05" value="6.5"
+            oninput="recalcSlug('5260-sw-2nd-st-coral-gables')" class="wi-rate-range" id="wi-rate-range-5260-sw-2nd-st-coral-gables">
+          <input type="number" min="2" max="12" step="0.01" value="6.5"
+            oninput="recalcSlug('5260-sw-2nd-st-coral-gables')" class="wi-rate-num" id="wi-rate-num-5260-sw-2nd-st-coral-gables" style="width:64px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+      </div>
+      <div class="whatif-field">
+        <label>Monthly Rent</label>
+        <div class="whatif-row">
+          <span style="color:var(--muted)">$</span>
+          <input type="number" min="0" step="50" value="4298"
+            oninput="recalcSlug('5260-sw-2nd-st-coral-gables')" class="wi-rent-num" id="wi-rent-num-5260-sw-2nd-st-coral-gables" style="width:90px">
+          <span style="color:var(--muted)">/mo</span>
+        </div>
+      </div>
+    </div>
+    <div class="whatif-results">
+      <div class="wi-result-item">
+        <div class="wi-result-label">Monthly Cost</div>
+        <div class="wi-result-val" id="wi-cost-5260-sw-2nd-st-coral-gables">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Break-even Rent</div>
+        <div class="wi-result-val" id="wi-be-5260-sw-2nd-st-coral-gables">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Est. Cash Flow</div>
+        <div class="wi-result-val" id="wi-cf-5260-sw-2nd-st-coral-gables" style="font-weight:700">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Assessment</div>
+        <div class="wi-result-val" id="wi-tier-5260-sw-2nd-st-coral-gables">—</div>
+      </div>
+    </div>
+  </div>
+
   
 
   <div class="charts-row">
@@ -1341,6 +2635,70 @@ td.small { font-size: 0.75rem; color: var(--muted); }
   </div>
 
   <p class='qualitative'>Solid townhouse in a top-rated school district (9/10 elementary, 8/10 middle) with resort-style amenities and a reasonable $255/mo HOA. Cash-flow negative based on Redfin's $2,946 rental estimate, but the seller's market sub-neighborhood (37-day avg DOM) and excellent schools suggest actual rents may run $3,200-3,500. Major flood risk (72% chance) is the key long-term risk — factor in flood insurance premium (~$1,500-3,000/yr). Appreciation play with rental income offset.</p>
+
+  <div class="whatif-box"
+    data-price="589900"
+    data-tax="463"
+    data-hoa="255"
+    data-ins="737"
+    data-maint="300"
+    data-capex="200"
+    data-pm="0"
+    data-vacancy="5"
+    data-slug="7825-sw-103rd-pl-miami-kendall">
+    <div class="whatif-title">🔧 What-If Calculator</div>
+    <div class="whatif-grid">
+      <div class="whatif-field">
+        <label>Down Payment</label>
+        <div class="whatif-row">
+          <input type="range" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('7825-sw-103rd-pl-miami-kendall')" class="wi-dp-range" id="wi-dp-range-7825-sw-103rd-pl-miami-kendall">
+          <input type="number" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('7825-sw-103rd-pl-miami-kendall')" class="wi-dp-num" id="wi-dp-num-7825-sw-103rd-pl-miami-kendall" style="width:54px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+        <div class="whatif-hint" id="wi-dp-amt-7825-sw-103rd-pl-miami-kendall"></div>
+      </div>
+      <div class="whatif-field">
+        <label>Mortgage Rate</label>
+        <div class="whatif-row">
+          <input type="range" min="2" max="12" step="0.05" value="5.99"
+            oninput="recalcSlug('7825-sw-103rd-pl-miami-kendall')" class="wi-rate-range" id="wi-rate-range-7825-sw-103rd-pl-miami-kendall">
+          <input type="number" min="2" max="12" step="0.01" value="5.99"
+            oninput="recalcSlug('7825-sw-103rd-pl-miami-kendall')" class="wi-rate-num" id="wi-rate-num-7825-sw-103rd-pl-miami-kendall" style="width:64px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+      </div>
+      <div class="whatif-field">
+        <label>Monthly Rent</label>
+        <div class="whatif-row">
+          <span style="color:var(--muted)">$</span>
+          <input type="number" min="0" step="50" value="2946"
+            oninput="recalcSlug('7825-sw-103rd-pl-miami-kendall')" class="wi-rent-num" id="wi-rent-num-7825-sw-103rd-pl-miami-kendall" style="width:90px">
+          <span style="color:var(--muted)">/mo</span>
+        </div>
+      </div>
+    </div>
+    <div class="whatif-results">
+      <div class="wi-result-item">
+        <div class="wi-result-label">Monthly Cost</div>
+        <div class="wi-result-val" id="wi-cost-7825-sw-103rd-pl-miami-kendall">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Break-even Rent</div>
+        <div class="wi-result-val" id="wi-be-7825-sw-103rd-pl-miami-kendall">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Est. Cash Flow</div>
+        <div class="wi-result-val" id="wi-cf-7825-sw-103rd-pl-miami-kendall" style="font-weight:700">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Assessment</div>
+        <div class="wi-result-val" id="wi-tier-7825-sw-103rd-pl-miami-kendall">—</div>
+      </div>
+    </div>
+  </div>
+
   
 
   <div class="charts-row">
@@ -1376,6 +2734,70 @@ td.small { font-size: 0.75rem; color: var(--muted); }
   </div>
 
   <p class='qualitative'>Best deal of the day. 5BD SFH on Caribbean Blvd at $297/sqft — 25% below Cutler Bay average. Cash flow positive at +$470/mo LTR against a $4,730 break-even. The same-street comp at 9426 Caribbean Blvd (5bd/3ba) asking $6,500/mo is the strongest signal — even at a $5,200 conservative estimate, this property cash-flows. Zero HOA drag. STR also viable at $457/mo. The extra bedroom relative to the $580K price makes this a true value play.</p>
+
+  <div class="whatif-box"
+    data-price="580000"
+    data-tax="483"
+    data-hoa="0"
+    data-ins="725"
+    data-maint="300"
+    data-capex="200"
+    data-pm="0"
+    data-vacancy="5"
+    data-slug="9711-caribbean-blvd-cutler-bay">
+    <div class="whatif-title">🔧 What-If Calculator</div>
+    <div class="whatif-grid">
+      <div class="whatif-field">
+        <label>Down Payment</label>
+        <div class="whatif-row">
+          <input type="range" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('9711-caribbean-blvd-cutler-bay')" class="wi-dp-range" id="wi-dp-range-9711-caribbean-blvd-cutler-bay">
+          <input type="number" min="0" max="50" step="1" value="20"
+            oninput="recalcSlug('9711-caribbean-blvd-cutler-bay')" class="wi-dp-num" id="wi-dp-num-9711-caribbean-blvd-cutler-bay" style="width:54px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+        <div class="whatif-hint" id="wi-dp-amt-9711-caribbean-blvd-cutler-bay"></div>
+      </div>
+      <div class="whatif-field">
+        <label>Mortgage Rate</label>
+        <div class="whatif-row">
+          <input type="range" min="2" max="12" step="0.05" value="6.01"
+            oninput="recalcSlug('9711-caribbean-blvd-cutler-bay')" class="wi-rate-range" id="wi-rate-range-9711-caribbean-blvd-cutler-bay">
+          <input type="number" min="2" max="12" step="0.01" value="6.01"
+            oninput="recalcSlug('9711-caribbean-blvd-cutler-bay')" class="wi-rate-num" id="wi-rate-num-9711-caribbean-blvd-cutler-bay" style="width:64px">
+          <span style="color:var(--muted)">%</span>
+        </div>
+      </div>
+      <div class="whatif-field">
+        <label>Monthly Rent</label>
+        <div class="whatif-row">
+          <span style="color:var(--muted)">$</span>
+          <input type="number" min="0" step="50" value="5200"
+            oninput="recalcSlug('9711-caribbean-blvd-cutler-bay')" class="wi-rent-num" id="wi-rent-num-9711-caribbean-blvd-cutler-bay" style="width:90px">
+          <span style="color:var(--muted)">/mo</span>
+        </div>
+      </div>
+    </div>
+    <div class="whatif-results">
+      <div class="wi-result-item">
+        <div class="wi-result-label">Monthly Cost</div>
+        <div class="wi-result-val" id="wi-cost-9711-caribbean-blvd-cutler-bay">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Break-even Rent</div>
+        <div class="wi-result-val" id="wi-be-9711-caribbean-blvd-cutler-bay">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Est. Cash Flow</div>
+        <div class="wi-result-val" id="wi-cf-9711-caribbean-blvd-cutler-bay" style="font-weight:700">—</div>
+      </div>
+      <div class="wi-result-item">
+        <div class="wi-result-label">Assessment</div>
+        <div class="wi-result-val" id="wi-tier-9711-caribbean-blvd-cutler-bay">—</div>
+      </div>
+    </div>
+  </div>
+
   
     <div class="str-box">
       <div class="str-label">🏖️ STR Scenario (Short-Term Rental)</div>
@@ -4317,6 +5739,7 @@ rows.forEach(function(row) {
     if (card) {
       card.classList.add('visible');
       if (placeholder) placeholder.style.display = 'none';
+      recalcSlug(slug);
       setTimeout(function() { card.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 50);
     }
   });
@@ -4326,6 +5749,83 @@ if (PROPERTIES.length === 1) {
   var firstRow = document.querySelector('.prop-row');
   if (firstRow) firstRow.click();
 }
+
+// ── What-If Calculator ────────────────────────────────────────────────────
+function fmtUSD(v) {
+  if (v === null || v === undefined || isNaN(v)) return '—';
+  var sign = v < 0 ? '-' : '';
+  return sign + '$' + Math.abs(Math.round(v)).toLocaleString();
+}
+
+function recalcSlug(slug) {
+  var box = document.querySelector('.whatif-box[data-slug="' + slug + '"]');
+  if (!box) return;
+
+  // Read constants from data attributes
+  var price   = parseFloat(box.dataset.price)   || 0;
+  var tax     = parseFloat(box.dataset.tax)     || 0;
+  var hoa     = parseFloat(box.dataset.hoa)     || 0;
+  var ins     = parseFloat(box.dataset.ins)     || 0;
+  var maint   = parseFloat(box.dataset.maint)   || 0;
+  var capex   = parseFloat(box.dataset.capex)   || 0;
+  var pm_flat = parseFloat(box.dataset.pm)      || 0;
+  var vac     = parseFloat(box.dataset.vacancy) / 100 || 0.05;
+
+  // Read user inputs (sync range ↔ number)
+  var dpRange  = document.getElementById('wi-dp-range-' + slug);
+  var dpNum    = document.getElementById('wi-dp-num-'   + slug);
+  var rateRange= document.getElementById('wi-rate-range-'+ slug);
+  var rateNum  = document.getElementById('wi-rate-num-' + slug);
+  var rentNum  = document.getElementById('wi-rent-num-' + slug);
+
+  // Keep sliders + number inputs in sync
+  if (event && event.target === dpRange)   dpNum.value   = dpRange.value;
+  if (event && event.target === dpNum)     dpRange.value = dpNum.value;
+  if (event && event.target === rateRange) rateNum.value = parseFloat(rateRange.value).toFixed(2);
+  if (event && event.target === rateNum)   rateRange.value = rateNum.value;
+
+  var dpPct  = parseFloat(dpNum.value)    || 20;
+  var rate   = parseFloat(rateNum.value)  || 6.5;
+  var rent   = parseFloat(rentNum.value)  || 0;
+
+  // Compute
+  var loan      = price * (1 - dpPct / 100);
+  var dpAmt     = price * dpPct / 100;
+  var mr        = rate / 100 / 12;
+  var pi        = mr > 0 ? loan * (mr * Math.pow(1+mr,360)) / (Math.pow(1+mr,360)-1) : loan/360;
+  var total     = pi + tax + hoa + ins + maint + capex + pm_flat;
+  var breakeven = total / (1 - vac);
+  var cf        = rent - total;
+
+  // Update down payment $ hint
+  var dpAmtEl = document.getElementById('wi-dp-amt-' + slug);
+  if (dpAmtEl) dpAmtEl.textContent = 'Down payment: ' + fmtUSD(dpAmt);
+
+  // Update result fields
+  document.getElementById('wi-cost-' + slug).textContent = fmtUSD(total) + '/mo';
+  document.getElementById('wi-be-'   + slug).textContent = fmtUSD(breakeven) + '/mo';
+
+  var cfEl   = document.getElementById('wi-cf-'   + slug);
+  var tierEl = document.getElementById('wi-tier-' + slug);
+  cfEl.textContent = fmtUSD(cf) + '/mo';
+  var tier, color;
+  if (cf > 0)            { tier = 'Cash Flow +';     color = '#22c55e'; }
+  else if (cf > -300)    { tier = 'Near Break-even'; color = '#f59e0b'; }
+  else                   { tier = 'Cash Flow −';     color = '#ef4444'; }
+  cfEl.style.color   = color;
+  tierEl.textContent = tier;
+  tierEl.style.color = color;
+}
+
+// Init all calculators on load
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.whatif-box').forEach(function(box) {
+    recalcSlug(box.dataset.slug);
+  });
+});
+
+// Also init when a card becomes visible (row click)
+var _origRowClick = null; // patched below after row listeners
 
 // ── Column sorting ────────────────────────────────────────────────────────
 (function() {
