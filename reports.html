@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Homey — Daily Reports</title>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg:#0f172a; --surface:#1e293b; --surface2:#263146; --border:#334155;
+  --text:#f1f5f9; --muted:#94a3b8; --accent:#6366f1;
+}
+body { background:var(--bg); color:var(--text); font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif; font-size:14px; line-height:1.6; }
+a { color:var(--accent); text-decoration:none; }
+a:hover { text-decoration:underline; }
+
+/* Nav */
+.nav { background:var(--surface); border-bottom:1px solid var(--border); padding:14px 32px; display:flex; align-items:center; gap:24px; }
+.nav-brand { font-size:1.1rem; font-weight:700; }
+.nav-brand span { color:var(--accent); }
+.nav-link { color:var(--muted); font-size:0.85rem; font-weight:500; padding:4px 10px; border-radius:6px; transition:background .15s; }
+.nav-link:hover, .nav-link.active { background:var(--surface2); color:var(--text); text-decoration:none; }
+
+.main { max-width:900px; margin:0 auto; padding:32px; }
+.page-title { font-size:1.3rem; font-weight:700; margin-bottom:6px; }
+.page-sub { color:var(--muted); font-size:0.85rem; margin-bottom:28px; }
+
+/* Index table */
+.rpt-table-wrap { border:1px solid var(--border); border-radius:12px; overflow:hidden; }
+table { width:100%; border-collapse:collapse; background:var(--surface); }
+thead th { background:var(--surface2); color:var(--muted); font-size:0.72rem; font-weight:600;
+            text-transform:uppercase; letter-spacing:.05em; padding:10px 18px; text-align:left; }
+.rpt-row { border-top:1px solid var(--border); cursor:pointer; transition:background .15s; }
+.rpt-row:hover { background:var(--surface2); }
+.rpt-date { width:120px; padding:14px 18px; white-space:nowrap; }
+.rpt-dow { font-size:0.72rem; color:var(--muted); }
+.rpt-ds { font-weight:600; font-size:0.88rem; }
+.rpt-title { font-weight:600; font-size:0.9rem; margin-bottom:3px; }
+.rpt-pick { font-size:0.78rem; color:var(--accent); margin-bottom:3px; }
+.rpt-macro { font-size:0.75rem; color:var(--muted); }
+td { padding:12px 18px; vertical-align:top; }
+.rpt-arrow { width:30px; text-align:center; color:var(--muted); font-size:1.2rem; vertical-align:middle; }
+
+/* Report panel */
+.rpt-panel { display:none; }
+.rpt-panel.visible { display:block; }
+.rpt-panel-header { display:flex; align-items:center; justify-content:space-between;
+                     margin-bottom:24px; padding-bottom:16px; border-bottom:1px solid var(--border); }
+.back-btn { background:var(--surface2); border:1px solid var(--border); color:var(--text);
+             padding:7px 14px; border-radius:8px; cursor:pointer; font-size:0.85rem; }
+.back-btn:hover { background:var(--border); }
+.rpt-panel-date { color:var(--muted); font-size:0.85rem; }
+.rpt-panel-body { max-width:720px; }
+.rpt-panel-body h2 { font-size:1.15rem; margin:20px 0 8px; color:var(--text); }
+.rpt-panel-body h3 { font-size:1rem; margin:18px 0 6px; color:var(--text); }
+.rpt-panel-body h4 { font-size:0.9rem; margin:14px 0 4px; color:var(--muted); }
+.rpt-panel-body p { color:var(--muted); margin-bottom:6px; }
+.rpt-panel-body ul { padding-left:20px; margin-bottom:10px; }
+.rpt-panel-body li { color:var(--muted); margin-bottom:4px; line-height:1.55; }
+.rpt-panel-body strong { color:var(--text); }
+.rpt-panel-body em { color:#a5b4fc; }
+.rpt-panel-body code { background:var(--surface2); border-radius:4px; padding:1px 5px; font-size:0.85em; color:#34d399; }
+.rpt-panel-body hr { border:none; border-top:1px solid var(--border); margin:20px 0; }
+.rpt-panel-body a { color:var(--accent); }
+.rpt-panel-body br { display:block; margin:4px 0; content:''; }
+
+#rpt-index { display:block; }
+
+@media (max-width:600px) {
+  .main { padding:16px; }
+  .nav { padding:12px 16px; gap:14px; }
+  .rpt-date { display:none; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">🏠 <span>Homey</span></div>
+  <a href="index.html" class="nav-link">Dashboard</a>
+  <a href="reports.html"   class="nav-link active">Reports</a>
+</nav>
+
+<div class="main">
+  <!-- ── Index view ── -->
+  <div id="rpt-index">
+    <div class="page-title">Daily Reports</div>
+    <div class="page-sub">Updated March 07, 2026 at 02:19 PM &bull; 11 reports</div>
+    <div class="rpt-table-wrap">
+      <table>
+        <thead>
+          <tr><th>Date</th><th>Report</th><th></th></tr>
+        </thead>
+        <tbody>
+        <tr class="rpt-row" data-slug="2026-03-07" onclick="openReport('2026-03-07')">
+          <td class="rpt-date">
+            <div class="rpt-dow">Saturday</div>
+            <div class="rpt-ds">March 07, 2026</div>
+          </td>
+          <td>
+            <div class="rpt-title">🏠 HOMEY DAILY REAL ESTATE REPORT — Saturday, March 7, 2026</div>
+            
+            <div class="rpt-macro">- **Rates: 6.00%** (PMMS March 5). MND real-time 6.14%. Sub-6% may have been transient but buyer demand is surging. · - …</div>
+          </td>
+          <td class="rpt-arrow">›</td>
+        </tr>
+        <tr class="rpt-row" data-slug="2026-03-06" onclick="openReport('2026-03-06')">
+          <td class="rpt-date">
+            <div class="rpt-dow">Friday</div>
+            <div class="rpt-ds">March 06, 2026</div>
+          </td>
+          <td>
+            <div class="rpt-title">🏘 HOMEY DAILY SCAN — Friday, March 6, 2026</div>
+            
+            <div class="rpt-macro">- **Rate: 6.00%** (PMMS 3/5, +2bps from last week) — stabilizing. Sub-6% dip (Feb 26) looks transient. Refinance activit…</div>
+          </td>
+          <td class="rpt-arrow">›</td>
+        </tr>
+        <tr class="rpt-row" data-slug="2026-03-05" onclick="openReport('2026-03-05')">
+          <td class="rpt-date">
+            <div class="rpt-dow">Thursday</div>
+            <div class="rpt-ds">March 05, 2026</div>
+          </td>
+          <td>
+            <div class="rpt-title">🏠 HOMEY DAILY REAL ESTATE SCAN — Thursday, March 5, 2026</div>
+            
+            <div class="rpt-macro">- **Rate: 6.38%** (Redfin calculator 3/5). MND had 6.13% on 3/3. Sub-6% window was transient — still well below 2025's 6…</div>
+          </td>
+          <td class="rpt-arrow">›</td>
+        </tr>
+        <tr class="rpt-row" data-slug="2026-03-04" onclick="openReport('2026-03-04')">
+          <td class="rpt-date">
+            <div class="rpt-dow">Wednesday</div>
+            <div class="rpt-ds">March 04, 2026</div>
+          </td>
+          <td>
+            <div class="rpt-title">🏡 HOMEY DAILY REAL ESTATE SCAN — Wednesday, March 4, 2026</div>
+            
+            <div class="rpt-macro">- **Rate ticks up** to 6.13% (MND 3/3) from 5.98% PMMS milestone. Sub-6% window may be transient — still well below 2025…</div>
+          </td>
+          <td class="rpt-arrow">›</td>
+        </tr>
+        <tr class="rpt-row" data-slug="2026-03-03" onclick="openReport('2026-03-03')">
+          <td class="rpt-date">
+            <div class="rpt-dow">Tuesday</div>
+            <div class="rpt-ds">March 03, 2026</div>
+          </td>
+          <td>
+            <div class="rpt-title">🏠 HOMEY DAILY REAL ESTATE REPORT — Tuesday, March 3, 2026</div>
+            
+            <div class="rpt-macro">- **Rates sub-6% holding** — Freddie Mac PMMS 5.98%. Miami Realtors: buyer demand surge ongoing. · - **Kendall -17.8% Yo…</div>
+          </td>
+          <td class="rpt-arrow">›</td>
+        </tr>
+        <tr class="rpt-row" data-slug="2026-03-01" onclick="openReport('2026-03-01')">
+          <td class="rpt-date">
+            <div class="rpt-dow">Sunday</div>
+            <div class="rpt-ds">March 01, 2026</div>
+          </td>
+          <td>
+            <div class="rpt-title">🏠 HOMEY DAILY REAL ESTATE SCAN — Sunday, March 1, 2026</div>
+            <div class="rpt-pick">- **FL insurance savings stacking** — Citizens cuts active + private market corr</div>
+            <div class="rpt-macro">- **Rate holding sub-6%** — Freddie Mac milestone 5.98% (Feb 26 PMMS). Buyer surge ongoing. Miami inventory still elevat…</div>
+          </td>
+          <td class="rpt-arrow">›</td>
+        </tr>
+        <tr class="rpt-row" data-slug="2026-02-28" onclick="openReport('2026-02-28')">
+          <td class="rpt-date">
+            <div class="rpt-dow">Saturday</div>
+            <div class="rpt-ds">February 28, 2026</div>
+          </td>
+          <td>
+            <div class="rpt-title">🏡 HOMEY DAILY REAL ESTATE SCAN — Saturday, February 28, 2026</div>
+            
+            <div class="rpt-macro">- **30yr rate sub-6%** — Freddie Mac confirms 5.98% milestone. Refinance surge underway. Purchase apps up YoY. · - **Mia…</div>
+          </td>
+          <td class="rpt-arrow">›</td>
+        </tr>
+        <tr class="rpt-row" data-slug="2026-02-27" onclick="openReport('2026-02-27')">
+          <td class="rpt-date">
+            <div class="rpt-dow">Friday</div>
+            <div class="rpt-ds">February 27, 2026</div>
+          </td>
+          <td>
+            <div class="rpt-title">🏡 HOMEY DAILY REAL ESTATE REPORT — Friday, February 27, 2026</div>
+            
+            <div class="rpt-macro">- **Sub-6% rate milestone** — Freddie Mac PMMS 5.98% (Feb 26). Miami Realtors: "First time below 6% since 2022." Buyer d…</div>
+          </td>
+          <td class="rpt-arrow">›</td>
+        </tr>
+        <tr class="rpt-row" data-slug="2026-02-26" onclick="openReport('2026-02-26')">
+          <td class="rpt-date">
+            <div class="rpt-dow">Thursday</div>
+            <div class="rpt-ds">February 26, 2026</div>
+          </td>
+          <td>
+            <div class="rpt-title">🏠 HOMEY DAILY REAL ESTATE SCAN — Thursday, February 26, 2026</div>
+            
+            <div class="rpt-macro">- **🚨 RATE MILESTONE: 30yr fixed drops to 5.98% (Freddie Mac, Feb 26)** — FIRST TIME BELOW 6% IN 3+ YEARS. Buyer surge s…</div>
+          </td>
+          <td class="rpt-arrow">›</td>
+        </tr>
+        <tr class="rpt-row" data-slug="2026-02-25" onclick="openReport('2026-02-25')">
+          <td class="rpt-date">
+            <div class="rpt-dow">Wednesday</div>
+            <div class="rpt-ds">February 25, 2026</div>
+          </td>
+          <td>
+            <div class="rpt-title">🏠 HOMEY DAILY REAL ESTATE SCAN — Wednesday, February 25, 2026</div>
+            <div class="rpt-pick">💡 Classic distressed adjacent-to-Coral-Gables play. 32% below neighborhood $/sqf</div>
+            <div class="rpt-macro">- **Miami buyer's market deepening** — Kendall -22.4% YoY, avg 115 DOM. Sellers accepting 6% below ask on average. · - *…</div>
+          </td>
+          <td class="rpt-arrow">›</td>
+        </tr>
+        <tr class="rpt-row" data-slug="2026-02-24" onclick="openReport('2026-02-24')">
+          <td class="rpt-date">
+            <div class="rpt-dow">Tuesday</div>
+            <div class="rpt-ds">February 24, 2026</div>
+          </td>
+          <td>
+            <div class="rpt-title">🏡 HOMEY DAILY REAL ESTATE SCAN — Tuesday, February 24, 2026</div>
+            
+            <div class="rpt-macro">- **Miami median now $602K, -8.4% YoY** (Jan 2026, Redfin) — 8,750+ active listings, 9.8 months supply. Deep buyer's mar…</div>
+          </td>
+          <td class="rpt-arrow">›</td>
+        </tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── Individual report panels ── -->
+  
+    <div class="rpt-panel" id="panel-2026-03-07">
+      <div class="rpt-panel-header">
+        <button class="back-btn" onclick="closeReport()">← Back to all reports</button>
+        <div class="rpt-panel-date">Saturday, March 07, 2026</div>
+      </div>
+      <div class="rpt-panel-body"><h2>🏠 HOMEY DAILY REAL ESTATE REPORT — Saturday, March 7, 2026</h2>
+<br>
+<p>📅 7:00 AM | ~40 Listings Reviewed | Rate: 6.00% (PMMS 3/5)</p>
+<br>
+<hr>
+<br>
+<h3>📰 MACRO PULSE</h3>
+<br>
+<ul>
+<li><strong>Rates: 6.00%</strong> (PMMS March 5). MND real-time 6.14%. Sub-6% may have been transient but buyer demand is surging.</li>
+<li><strong>Brin Effect:</strong> Sergey Brin became the 2nd tech billionaire to buy Miami real estate in ONE WEEK (NYPost, March 5). Brokers predict luxury prices "will soar." Dual-market: ultra-luxury ripping while sub-$750K SFH stays buyer's market.</li>
+<li><strong>FL Insurance:</strong> Citizens reductions active at Spring 2026 renewals. 73+ rate-decrease filings at FL OIR. State Farm -20% cumulative. STR/ADU expansion (Live Local Act) stalled in Tallahassee.</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>🏠 PROPERTY #1 — BEST TODAY | Score 62/100</h3>
+<br>
+<p><strong>20934 SW 84th Ave, Cutler Bay FL 33189 (Saga Bay)</strong></p>
+<p>🔗 <a href="https://www.redfin.com/FL/Cutler-Bay/20934-SW-84th-Ave-33189/home/43224471" target="_blank">https://www.redfin.com/FL/Cutler-Bay/20934-SW-84th-Ave-33189/home/43224471</a></p>
+<ul>
+<li>$420,000 | 4BD/3BA | 1,293 sqft | <strong>HOA: $70/mo</strong> | Garage | Built 1988</li>
+</ul>
+<br>
+<ul>
+<li>Listed 49 min before scan — first-mover advantage</li>
+<li>Monthly cost: $3,460 | Break-even: $3,642</li>
+<li>4BD comps avg: $3,500/mo → CF: <strong>-$142/mo near break-even</strong></li>
+</ul>
+<p>  Comps: Belview Dr $3,700 | SW 206th Ln $3,950 | SW 87th Pl $3,410</p>
+<ul>
+<li>🏖️ <strong>STR: +$1,490/mo</strong> ($275/night × 18 nights = $4,950 revenue)</li>
+<li>⚠️ Redfin est: listed <strong>$92K below estimate (+21.9%)</strong> ← strongest delta today</li>
+<li>🌊 Flood MINOR | Wind/Heat Extreme</li>
+<li>⚠️ Verify 4BD bedroom count (historical records show 3BD — confirm with agent)</li>
+</ul>
+<br>
+<ul>
+<li>Near-zero HOA friction + best STR upside today. Negotiate to $400K for LTR positive.</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>🏠 PROPERTY #2 | Score 52/100</h3>
+<br>
+<p><strong>9207 SW 227th St Unit 3, Cutler Bay FL 33190 (Gated Lakes)</strong></p>
+<p>🔗 <a href="https://www.redfin.com/FL/Cutler-Bay/9207-SW-227th-St-33190" target="_blank">https://www.redfin.com/FL/Cutler-Bay/9207-SW-227th-St-33190</a></p>
+<ul>
+<li>$340,000 | 3BD/2.5BA | 1,325 sqft | HOA: $348/mo | 24hr gated security</li>
+</ul>
+<br>
+<ul>
+<li>Monthly cost: $3,187 | Break-even: $3,355</li>
+<li>Comps avg: $3,155/mo → CF: <strong>-$200/mo near break-even</strong></li>
+<li>⚠️ Redfin delta: <strong>+11.8%</strong> (listed below estimate)</li>
+<li>Turnkey: new roof + new A/C + new appliances + updated baths = zero near-term CapEx</li>
+<li>🌊 Flood MINOR | Wind/Heat Extreme</li>
+</ul>
+<br>
+<ul>
+<li>Only $68K down, $272K financed. Low-risk appreciation entry. Negotiate to $320K for positive cash flow.</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>🏠 PROPERTY #3 | Score 50/100</h3>
+<br>
+<p><strong>10020 SW 223rd Ln, Cutler Bay FL 33190</strong></p>
+<ul>
+<li>$570,000 | 4BD/2.5BA | 2,061 sqft | HOA: ~$350/mo est.</li>
+</ul>
+<br>
+<ul>
+<li>Monthly cost: $4,772 | Break-even: $5,023</li>
+<li>ppsf <strong>30.2% below avg</strong> — exceptional discount, likely AS-IS/distressed</li>
+<li>⚠️ Redfin delta: <strong>+8.8%</strong> | 🌊 Flood MODERATE ⚠️ — get flood insurance quote</li>
+<li>STR: +$178/mo if eligible ($275 × 18 = $4,950 revenue) — verify HOA</li>
+</ul>
+<br>
+<hr>
+<br>
+<ul>
+<li>Scan: ~40 listings | 3 new | 37 total tracked</li>
+</ul>
+<p>Dashboard: <a href="https://tyleradebayo67.github.io/homeydashboard/" target="_blank">https://tyleradebayo67.github.io/homeydashboard/</a></p></div>
+    </div>
+    <div class="rpt-panel" id="panel-2026-03-06">
+      <div class="rpt-panel-header">
+        <button class="back-btn" onclick="closeReport()">← Back to all reports</button>
+        <div class="rpt-panel-date">Friday, March 06, 2026</div>
+      </div>
+      <div class="rpt-panel-body"><h2>🏘 HOMEY DAILY SCAN — Friday, March 6, 2026</h2>
+<br>
+<p>📅 Rate: 6.00% (Freddie Mac) | 34 Properties Tracked | 25+ Reviewed</p>
+<br>
+<hr>
+<br>
+<h3>🏠 #1 — TOP PICK | Score 40/100</h3>
+<br>
+<p><strong>8500 SW 150th Ave #1, Miami FL 33193 (Hammocks)</strong></p>
+<p>🔗 <a href="https://www.redfin.com/FL/Miami/8500-SW-150th-Ave-33193/unit-1/home/43327143" target="_blank">https://www.redfin.com/FL/Miami/8500-SW-150th-Ave-33193/unit-1/home/43327143</a></p>
+<ul>
+<li>$360,000 | $293/sqft | 3BD/2BA | 1,230 sqft | Built 2004</li>
+</ul>
+<br>
+<ul>
+<li>ppsf 24.9% below Hammocks avg ($390) ✅</li>
+<li>Redfin est $388,933 → <strong>+8.0% delta</strong> ⭐ (listed below estimate)</li>
+<li>HOA ~$300/mo (condo — verify docs)</li>
+<li>🏫 Kendale Lakes Elementary <strong>10/10</strong></li>
+<li>Monthly cost: $3,277 | Break-even: $3,449 | Market rent: ~$2,950 → CF: <strong>-$499/mo</strong> ❌</li>
+<li>🏖️ STR (IF eligible): $4,950 revenue → <strong>+$1,673/mo</strong> ✅ ⚠️ Condo HOA likely restricts STR</li>
+<li>🌊 Flood MINIMAL ✅ | Wind/Heat Extreme</li>
+</ul>
+<br>
+<ul>
+<li>Best Redfin delta + deepest ppsf discount today. Appreciation play; verify HOA STR rules before underwriting.</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>🏠 #2 — PREMIUM PLAY | Score 37/100</h3>
+<br>
+<p><strong>4400 SW 4th St, Coral Gables FL 33134</strong></p>
+<ul>
+<li>$650,000 | $421/sqft | 2BD/1.5BA | 1,544 sqft | Built 1945 | 7,139 sqft lot | HOA: $0</li>
+</ul>
+<br>
+<ul>
+<li>ppsf 19.0% below Coral Gables avg ($520) ✅</li>
+<li>Monthly cost: $4,973 | Break-even: $5,235 | LTR rent: ~$3,800 → CF: <strong>-$1,435/mo</strong> ❌</li>
+<li>🏖️ STR (SFH eligible): $4,950/mo → CF: <strong>-$23/mo near break-even</strong> | At $300/night: <strong>+$427/mo</strong> ✅</li>
+<li>Flood MINIMAL ✅ | Near UM — strong STR demand</li>
+</ul>
+<br>
+<ul>
+<li>Rare SFH in true Coral Gables, STR essentially breaks even. Budget $50-100K reno (1945 build).</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>🏠 #3 — WATCH-ONLY | Score 12/100</h3>
+<br>
+<p><strong>13319 SW 184th Ter, Miami FL 33177 (S. Miami Heights)</strong></p>
+<ul>
+<li>$699,900 | $363/sqft | 4BD/3BA | HOA: $0 | Brand new, never lived in</li>
+</ul>
+<br>
+<ul>
+<li>ppsf 13.4% ABOVE S. Miami Heights avg ($320) ⚠️ (new-build premium)</li>
+<li>Same-street comp: 12782 SW 184th Ter, 4BD renting <strong>$4,400/mo</strong> (Rent.com active)</li>
+<li>Overpriced at ask. Negotiate to $600K ($311/sqft) for a viable entry.</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>📰 MACRO BULLETS</h3>
+<br>
+<ul>
+<li><strong>Rate: 6.00%</strong> (PMMS 3/5, +2bps from last week) — stabilizing. Sub-6% dip (Feb 26) looks transient. Refinance activity up; purchase applications ahead of YoY pace.</li>
+<li><strong>FL Condo Crisis → SFH Premium Widening</strong> — Insurance carriers exiting FL condo market. HOAs + special assessments surging. SFH-first bias validated further.</li>
+<li><strong>FL Insurance Stabilizing</strong> — JMCO confirms: if no major hurricane, premium growth downtrend continues through 2026. Improving deal scores ahead.</li>
+</ul>
+<br>
+<ul>
+<li>Dashboard: <a href="https://tyleradebayo67.github.io/homeydashboard/" target="_blank">https://tyleradebayo67.github.io/homeydashboard/</a></li>
+</ul></div>
+    </div>
+    <div class="rpt-panel" id="panel-2026-03-05">
+      <div class="rpt-panel-header">
+        <button class="back-btn" onclick="closeReport()">← Back to all reports</button>
+        <div class="rpt-panel-date">Thursday, March 05, 2026</div>
+      </div>
+      <div class="rpt-panel-body"><h2>🏠 HOMEY DAILY REAL ESTATE SCAN — Thursday, March 5, 2026</h2>
+<br>
+<ul>
+<li>~25 Listings Reviewed | 3 Fully Analyzed | 2 Disqualified (Flood SEVERE)</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>📰 MACRO BULLETS</h3>
+<br>
+<ul>
+<li><strong>Rate: 6.38%</strong> (Redfin calculator 3/5). MND had 6.13% on 3/3. Sub-6% window was transient — still well below 2025's 6.74%.</li>
+<li><strong>FL STR green light for 2026</strong> — No statewide ban. DBPR standardizing licensing. Insurance market improving. STR viable for standalone SFHs.</li>
+<li><strong>Miami buyer's market holding</strong> — Median $602K (-8.4% YoY). 8,750+ active listings, 9.8 months supply. Rate bump may have briefly paused sub-6% demand surge.</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>🔥 #1 — HOT HOME | Score 25/100</h3>
+<br>
+<p><strong>11350 SW 160th Ave, Miami FL 33196 (Chantarelle at the Hammocks, Kendall West)</strong></p>
+<p>🔗 <a href="https://www.redfin.com/FL/Miami/11350-SW-160th-Ave-33196/home/43188362" target="_blank">https://www.redfin.com/FL/Miami/11350-SW-160th-Ave-33196/home/43188362</a></p>
+<ul>
+<li>$420,000 | $328/sqft | 3BD/2BA | 1,282 sqft | HOA: <strong>$98/mo</strong> | Built 1994</li>
+</ul>
+<br>
+<ul>
+<li>ppsf 14.8% below area avg ($385)</li>
+<li>HOA $98/mo — exceptional for gated SFH</li>
+<li>Monthly cost: $3,569 | Break-even: $3,757/mo</li>
+<li>LTR market rent: ~$3,300/mo → CF: <strong>-$457/mo NEGATIVE (LTR)</strong></li>
+<li>🏖️ <strong>STR: $275/night × 18 nights = $4,950/mo → +$1,381/mo POSITIVE</strong> ✅</li>
+<li>🌊 Flood MINIMAL ✅ | Fire MAJOR ⚠️ (4% wildfire risk — verify insurance)</li>
+<li>🏫 Porter Elementary 8/10, 0.2mi</li>
+<li>⚡ <strong>HOT HOME badge — 334 views, 18 favorites in 48hrs</strong> — fastest-moving property this week</li>
+</ul>
+<br>
+<ul>
+<li>HOT HOME status means this WILL move fast. STR is the only path to positive cash flow. Negotiate 3% off → ~$407K improves gap toward break-even LTR.</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>🏠 #2 | Score 18/100</h3>
+<br>
+<p><strong>9621 SW 142nd Ct, Miami FL 33186 (The Hammocks)</strong></p>
+<p>🔗 <a href="https://www.redfin.com/FL/Miami/9621-SW-142nd-Ct-33186/home/43183474" target="_blank">https://www.redfin.com/FL/Miami/9621-SW-142nd-Ct-33186/home/43183474</a></p>
+<ul>
+<li>$480,000 | $268/sqft | 3BD/3BA | 1,794 sqft | HOA: $460/mo | Built 1987</li>
+</ul>
+<br>
+<ul>
+<li>Listed TODAY (8hrs ago) — first-mover edge</li>
+<li>🏫 Claude Pepper Elementary <strong>9/10</strong> (0.6mi)</li>
+<li>Flood MINIMAL ✅ | Fire MINIMAL ✅ — cleanest climate profile today</li>
+<li>LTR: ~$3,200/mo → CF: <strong>-$1,385/mo NEGATIVE</strong></li>
+<li>$460 HOA is primary drag; pure appreciation play in premium school zone</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>🏠 #3 | Score 20/100</h3>
+<br>
+<p><strong>13661 SW 119th Ave, Miami FL 33186 (Three Lakes, Kendall)</strong></p>
+<p>🔗 <a href="https://www.redfin.com/FL/Miami/13661-SW-119th-Ave-33186/home/43256272" target="_blank">https://www.redfin.com/FL/Miami/13661-SW-119th-Ave-33186/home/43256272</a></p>
+<ul>
+<li>$639,990 | $297/sqft | 4BD/3BA | 2,152 sqft | HOA: $219/mo | Built 2001</li>
+</ul>
+<br>
+<ul>
+<li>Redfin est: $644,001 — listed <strong>$4K BELOW estimate</strong> ✅</li>
+<li>🏖️ STR: near break-even (-$296/mo)</li>
+<li>🏫 Gloria Floyd Elementary 9/10 (1.2mi)</li>
+<li>Flood MINIMAL ✅ | Fire MINIMAL ✅</li>
+<li>Top 10% of views in first 25hrs</li>
+</ul>
+<br>
+<hr>
+<br>
+<ul>
+<li>Disqualified today: 6937 SW 115th Pl (Flood SEVERE + $805 HOA), 3438 SW 112th Ave (Flood SEVERE)</li>
+</ul>
+<br>
+<ul>
+<li>Dashboard: <a href="https://tyleradebayo67.github.io/homeydashboard/" target="_blank">https://tyleradebayo67.github.io/homeydashboard/</a></li>
+</ul></div>
+    </div>
+    <div class="rpt-panel" id="panel-2026-03-04">
+      <div class="rpt-panel-header">
+        <button class="back-btn" onclick="closeReport()">← Back to all reports</button>
+        <div class="rpt-panel-date">Wednesday, March 04, 2026</div>
+      </div>
+      <div class="rpt-panel-body"><h2>🏡 HOMEY DAILY REAL ESTATE SCAN — Wednesday, March 4, 2026</h2>
+<br>
+<ul>
+<li>Miami SFH/Townhouse Focus | Rate: 6.13% (MND 3/3)</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>🏠 PROPERTY 1 — TOP PICK TODAY | Score 45/100</h3>
+<br>
+<p><strong>14371 Kendale Lakes Cir, Miami FL 33183</strong></p>
+<p>🔗 <a href="https://www.redfin.com/FL/Miami/14371-Kendale-Lakes-Cir-33183/home/200730174" target="_blank">https://www.redfin.com/FL/Miami/14371-Kendale-Lakes-Cir-33183/home/200730174</a></p>
+<ul>
+<li>$429,900 | $292/sqft | 3BR/2.5BA | 1,471 sqft | HOA: $171/mo | NEW LISTING (Mar 2)</li>
+</ul>
+<br>
+<ul>
+<li>ppsf 24.2% below Kendale Lakes avg ($385) — key driver</li>
+<li>Monthly cost: $3,654 | Break-even: $3,847/mo</li>
+<li>Rental comps avg: $3,117/mo → CF: <strong>-$730/mo NEGATIVE</strong></li>
+<li>Redfin est: $428,445 | Delta: -0.34% (at estimate)</li>
+<li>🌊 Flood Minor | Wind/Heat Extreme</li>
+<li>🏫 <strong>Bent Tree Elementary 10/10</strong> (1mi), McMillan Middle 7/10</li>
+<li>Updates: New roof 2023, AC 2021 → near-zero near-term capex</li>
+<li>Golf course views</li>
+</ul>
+<br>
+<ul>
+<li>Pure appreciation play — top school zone, 24% ppsf discount in deep buyer's market (99 DOM avg, 3% below list). Entry point not seen since 2020.</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>🏠 PROPERTY 2 | Score 20/100</h3>
+<br>
+<p><strong>17135 SW 96th St, Miami FL 33196 (Kendall Square / The Hammocks)</strong></p>
+<p>🔗 <a href="https://www.redfin.com/FL/Miami/17135-SW-96th-St-33196/home/79136801" target="_blank">https://www.redfin.com/FL/Miami/17135-SW-96th-St-33196/home/79136801</a></p>
+<ul>
+<li>$550,000 | $316/sqft | 3BR/2.5BA | 1,740 sqft | HOA: <strong>$47/mo</strong> ← portfolio-best</li>
+</ul>
+<br>
+<ul>
+<li>Re-listed after 5 months (Oct 2025 → removed Feb 2026 → back now) = <strong>MOTIVATED SELLER</strong></li>
+<li>Monthly cost: $4,365 | Break-even: $4,595/mo → CF: <strong>-$1,212/mo NEGATIVE</strong></li>
+<li>🏫 Kendall Square K-8 Center (8/10, 0.3mi, inside community!)</li>
+<li>$47/mo HOA is exceptional for a gated townhome</li>
+</ul>
+<br>
+<ul>
+<li>Negotiate to $500K ($287/sqft). Score is weak at ask; strong at $500K. 2016 build, low capex, family-perfect community.</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>🏠 PROPERTY 3 | Score 18/100</h3>
+<br>
+<p><strong>13091 SW 232nd Ln, Miami FL 33170 (Princeton / South Dade)</strong></p>
+<p>🔗 <a href="https://www.redfin.com/FL/Miami/13091-SW-232nd-LN-33170/home/200730608" target="_blank">https://www.redfin.com/FL/Miami/13091-SW-232nd-LN-33170/home/200730608</a></p>
+<ul>
+<li>$539,900 | $298/sqft | 3BR/2.5BA | 1,812 sqft | HOA: $215/mo | Built 2022</li>
+</ul>
+<br>
+<ul>
+<li>🌊 Flood MINIMAL ✅ | Fire <strong>EXTREME</strong> ⚠️ (64% wildfire in 30yr — Everglades proximity)</li>
+<li>CF: <strong>-$1,798/mo VERY NEGATIVE</strong> | Walk score: 0.1</li>
+<li>Outer South Dade makes this a hard pass at current price</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>📰 MACRO BULLETS</h3>
+<br>
+<ul>
+<li><strong>Rate ticks up</strong> to 6.13% (MND 3/3) from 5.98% PMMS milestone. Sub-6% window may be transient — still well below 2025's 6.74%.</li>
+<li><strong>NYT (3/3): "Billionaires Spending More Than Ever on Miami Real Estate"</strong> — Zuckerberg + tech wave driving ultra-luxury while sub-$750K market stagnates. Dual-market dynamic creates price floor.</li>
+<li><strong>FL Live Local Act STR/ADU expansion stalled</strong> — local zoning disputes blocking Tallahassee legislation. Headwind for FL STR investment thesis.</li>
+</ul>
+<br>
+<ul>
+<li><strong>AUCTION REMINDER:</strong> 10500 SW 126th St — auction closes <strong>TODAY 9AM EST</strong>. Check Federa Home App.</li>
+</ul>
+<br>
+<ul>
+<li>Dashboard: <a href="https://tyleradebayo67.github.io/homeydashboard/" target="_blank">https://tyleradebayo67.github.io/homeydashboard/</a></li>
+</ul></div>
+    </div>
+    <div class="rpt-panel" id="panel-2026-03-03">
+      <div class="rpt-panel-header">
+        <button class="back-btn" onclick="closeReport()">← Back to all reports</button>
+        <div class="rpt-panel-date">Tuesday, March 03, 2026</div>
+      </div>
+      <div class="rpt-panel-body"><h2>🏠 HOMEY DAILY REAL ESTATE REPORT — Tuesday, March 3, 2026</h2>
+<br>
+<p>📅 7AM PT | Rate: 5.98% (Freddie Mac) | 25 Properties Tracked</p>
+<br>
+<hr>
+<br>
+<ul>
+<li><strong>URGENT: FORECLOSURE AUCTION TOMORROW</strong></li>
+</ul>
+<p><strong>10500 SW 126th St, Miami FL — CLOSES MARCH 4 @ 9AM EST</strong></p>
+<p>Score: 65/100 | $670K | 4,133 sqft | NO HOA | CF: +$890/mo</p>
+<p>Redfin est $708K (+5.7%). Platform: <strong>Federa Home App</strong></p>
+<br>
+<hr>
+<br>
+<h3>🏠 #1 — Score 50/100 — WATCH</h3>
+<br>
+<p><strong>11535 SW 109th Rd Unit 22A, Sabal Chase, Miami FL 33176</strong></p>
+<p>🔗 <a href="https://www.redfin.com/FL/Miami/11535-SW-109th-Rd-33176/unit-22-A/home/" target="_blank">https://www.redfin.com/FL/Miami/11535-SW-109th-Rd-33176/unit-22-A/home/</a></p>
+<ul>
+<li>$424,900 | $287/sqft | 3BD/2BA | 1,480 sqft | NEW LISTING</li>
+</ul>
+<br>
+<ul>
+<li>ppsf 26.4% below Kendall avg ($390) — deepest discount today</li>
+<li>1-story "A" floorplan | New roof | Accordion shutters</li>
+<li>Sabal Chase: pools, gym, tennis, pickleball, A-rated schools</li>
+<li>Total monthly: $3,818 | Break-even: $4,019/mo</li>
+<li>Market rent (3BR Kendall TH): ~$3,283/mo → CF: <strong>-$736/mo NEGATIVE</strong></li>
+<li>Redfin est ~$465K → <strong>+9.4% delta</strong> (listed below estimate ✅)</li>
+<li>🌊 Flood MINOR | Wind/Heat Extreme (universal Miami)</li>
+</ul>
+<br>
+<ul>
+<li>Appreciation play — 26.4% ppsf discount + strong school zone premium. Zero near-term capex: new roof in place.</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>🏠 #2 — Score 40/100</h3>
+<br>
+<p><strong>10916 SW 70th Ter, West Kendall FL 33173</strong></p>
+<ul>
+<li>$475,000 ↓ (cut $10K on 2/27, -2.1%) | $348/sqft | 3BD/2BA | 1,365 sqft</li>
+</ul>
+<br>
+<ul>
+<li>2.1% price cut Feb 27 — motivated seller signal</li>
+<li>Smoking-gun comp: <strong>identical unit next door actively rents for $3,250/mo</strong></li>
+<li>Total monthly: $4,044 | Break-even: $4,257/mo → CF: -$974/mo</li>
+<li>Redfin est ~$522K → <strong>+9.9% delta</strong> ✅</li>
+<li>🌊 Flood MODERATE — check insurance cost</li>
+</ul>
+<br>
+<ul>
+<li>Same-street comp confirms rental market. Negotiate $40-50K off list to materially improve math.</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>🏠 #3 — Score 40/100</h3>
+<br>
+<p><strong>11353 SW 109th Rd Unit 55-X, Sabal Chase FL 33176</strong></p>
+<ul>
+<li>$450,000 | $335/sqft | 3BD/2.5BA | NEW LISTING</li>
+</ul>
+<br>
+<ul>
+<li>Renovated: new AC, water heater, 2yr-old roof, updated kitchen + baths</li>
+<li>Same owner 30+ years = pristine maintenance</li>
+<li>Redfin est ~$490K → <strong>+8.9% delta</strong> ✅</li>
+<li>Two Sabal Chase units listed same day — leverage as buyer</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>🎯 RENTAL COMPS (3BR Kendall Townhouse)</h3>
+<ul>
+<li>10953 SW 70th Ter (same community!): $3,250/mo</li>
+<li>10872 SW 89th St: $3,300/mo</li>
+<li>7039 SW 115th Pl: $3,300/mo</li>
+<li><strong>Avg: $3,283/mo</strong></li>
+</ul>
+<br>
+<h3>📰 MACRO BULLETS</h3>
+<br>
+<ul>
+<li><strong>Rates sub-6% holding</strong> — Freddie Mac PMMS 5.98%. Miami Realtors: buyer demand surge ongoing.</li>
+<li><strong>Kendall -17.8% YoY</strong> (Redfin Mar 2026) — avg $450K. Buyer's market creating real entry windows in established gated communities.</li>
+<li><strong>FL Insurance relief accelerating</strong> — Miami-Dade avg -13.9% via Citizens Spring 2026 reductions. FL SFH holding costs meaningfully lower than 2024.</li>
+</ul>
+<br>
+<ul>
+<li>Dashboard: <a href="https://tyleradebayo67.github.io/homeydashboard/" target="_blank">https://tyleradebayo67.github.io/homeydashboard/</a></li>
+</ul></div>
+    </div>
+    <div class="rpt-panel" id="panel-2026-03-01">
+      <div class="rpt-panel-header">
+        <button class="back-btn" onclick="closeReport()">← Back to all reports</button>
+        <div class="rpt-panel-date">Sunday, March 01, 2026</div>
+      </div>
+      <div class="rpt-panel-body"><h2>🏠 HOMEY DAILY REAL ESTATE SCAN — Sunday, March 1, 2026</h2>
+<br>
+<p>📅 22 Properties Tracked | 3 New | Rate: ~5.95%</p>
+<br>
+<hr>
+<br>
+<ul>
+<li><strong>URGENT DEADLINE ALERTS</strong></li>
+<li>🔨 <strong>10500 SW 126th St (Kendall Foreclosure)</strong> — AUCTION CLOSES MARCH 4 @ 9AM EST. Score 65/100. $670K, 4BR/4,133sqft, NO HOA, Redfin est +5.7% above list. Platform: Federa Home App.</li>
+<li>⏰ <strong>13360 SW 89th Ter Unit B (Calusa/Kendall)</strong> — OFFER DEADLINE TOMORROW March 2 @ 5PM EST. Score 47/100.</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>🏠 PROPERTY #1 — TOP PICK ⭐ | Score 75/100 — STRONG</h3>
+<br>
+<p><strong>2220 SW 16th Ter, Miami FL 33145 (Coral Way)</strong></p>
+<p>🔗 <a href="https://www.redfin.com/FL/Miami/2220-SW-16th-Ter-33145/home/" target="_blank">https://www.redfin.com/FL/Miami/2220-SW-16th-Ter-33145/home/</a></p>
+<ul>
+<li>$519,900 | $264/sqft | 4BD/3BA | 1,968 sqft | NO HOA</li>
+</ul>
+<br>
+<ul>
+<li>Deal Score breakdown: ppsf discount 25pts + cash-flow positive 25pts + no HOA 10pts + climate 10pts + Redfin delta 5pts</li>
+<li>Down payment: $103,980 | Monthly P&I: $2,504 | Tax: $433 | Insurance: $650 | HOA: $0</li>
+<li><strong>Total monthly cost: $4,087</strong> | <strong>Break-even: $4,302/mo</strong></li>
+<li>Rental comps: 3440 SW 25th St (3BD/2BA) → $3,950/mo | 2396 SW 20th St (3BD/2BA) → $5,200/mo</li>
+<li>4BD/3BA estimated rent: ~$4,400/mo → <strong>CF: +$98/mo POSITIVE</strong> ✅</li>
+<li>⚠️ Redfin est ~$680K → <strong>+30.8% delta</strong> — listed WELL below estimated value</li>
+<li>🌊 Flood Minimal (4+ miles inland Coral Way) | Wind Moderate | Heat Major</li>
+</ul>
+<br>
+<ul>
+<li><strong>CRITICAL FLAGS:</strong> Listed ~49% below Coral Way avg ppsf ($264 vs $517). Almost certainly AS-IS distressed/foreclosure. Mandatory condition inspection before any offer. If reno costs $80-100K, all-in ~$620K → break-even rises but still potentially viable.</li>
+</ul>
+<br>
+<ul>
+<li>If condition is acceptable, this is the best deal score in the entire tracked portfolio.</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>🏠 PROPERTY #2 | Score 42/100</h3>
+<br>
+<p><strong>1042 NE 207th Ter, Miami FL 33179 (Ives Estates)</strong></p>
+<ul>
+<li>$549,000 | 3BD/2BA | No HOA</li>
+<li>Flood Minor | Good schools | CF: -$800/mo</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>🏠 PROPERTY #3 | Score 35/100</h3>
+<br>
+<p><strong>South Miami Heights area townhouse</strong></p>
+<ul>
+<li>~$480K | HOA $200/mo | CF negative</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>📰 MACRO BULLETS</h3>
+<br>
+<ul>
+<li><strong>Rate holding sub-6%</strong> — Freddie Mac milestone 5.98% (Feb 26 PMMS). Buyer surge ongoing. Miami inventory still elevated — negotiating window open.</li>
+<li><strong>Tech billionaire effect accelerating</strong> — Multiple reports of tech executives finalizing Miami purchases. Dual-market: luxury ripping, sub-$750K still buyer's market.</li>
+<li><strong>FL insurance savings stacking</strong> — Citizens cuts active + private market corrections = ~$1,200-1,500/yr savings on average Miami SFH vs 2024.</li>
+</ul>
+<br>
+<ul>
+<li>Dashboard: <a href="https://tyleradebayo67.github.io/homeydashboard/" target="_blank">https://tyleradebayo67.github.io/homeydashboard/</a></li>
+</ul></div>
+    </div>
+    <div class="rpt-panel" id="panel-2026-02-28">
+      <div class="rpt-panel-header">
+        <button class="back-btn" onclick="closeReport()">← Back to all reports</button>
+        <div class="rpt-panel-date">Saturday, February 28, 2026</div>
+      </div>
+      <div class="rpt-panel-body"><h2>🏡 HOMEY DAILY REAL ESTATE SCAN — Saturday, February 28, 2026</h2>
+<br>
+<p>📅 ~20 Miami + Bay Area listings | 3 Analyzed | 2 Urgent Deadlines</p>
+<br>
+<hr>
+<br>
+<ul>
+<li><strong>MACRO FLASH: 30yr fixed dipped to 5.95% — buyer-surge signal. Rate-sensitive markets will move fast.</strong></li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>🏠 PROPERTY #1 — TOP PICK ⚠️ OFFER DEADLINE IN 2 DAYS | Score 47/100</h3>
+<br>
+<p><strong>13360 SW 89th Ter Unit B, Miami FL 33186 (Calusa Point, Kendall)</strong></p>
+<p>🔗 <a href="https://www.redfin.com/FL/Miami/13360-SW-89th-Ter-33186/unit-B/home/43181071" target="_blank">https://www.redfin.com/FL/Miami/13360-SW-89th-Ter-33186/unit-B/home/43181071</a></p>
+<ul>
+<li>$499,000 | $313/sqft | 3BD/2BA | 1,592 sqft | HOA: $295/mo | 2-car garage | Gated</li>
+<li><strong>OFFER DEADLINE: March 2, 5PM EST</strong> — currently leased/income-producing</li>
+</ul>
+<br>
+<ul>
+<li>ppsf 16.5% below 33186 avg (~$375/sqft) → 25 pts</li>
+<li>HOA < $500 → 10 pts | Flood MINIMAL → 10 pts | Redfin delta +2.2% → 2 pts</li>
+<li>Total monthly: $4,214 | Break-even: $4,436/mo</li>
+<li>Rental comps: Amelia Apts $2,839/mo | Hidden Lake Apts $3,479/mo | Private gated: ~$3,400</li>
+<li>Avg market rent: ~$3,200/mo → CF: <strong>-$1,014/mo NEGATIVE</strong></li>
+<li>⚠️ Redfin Estimate: ~$510,000 → +2.2% delta (undervalued signal)</li>
+<li>🌊 Flood MINIMAL | Fire Minimal — rare for Kendall</li>
+<li>🏫 <strong>Schools: 10/10 Calusa Elementary, 9/10 Arvida Middle</strong> — best-in-class</li>
+</ul>
+<br>
+<ul>
+<li>Premium school zone (10/10) + flood-free + turnkey leased property. Offer by March 2.</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>🏠 PROPERTY #2 | Score 35/100</h3>
+<br>
+<p><strong>15416 SW 99th Ln, Miami FL 33196 (West Kendall)</strong></p>
+<ul>
+<li>$510,000 | 3BD/2.5BA | HOA $185/mo</li>
+<li>Total: $4,318 | Market rent: ~$3,200/mo → CF: -$1,118/mo</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>🏠 PROPERTY #3 | Score 30/100</h3>
+<br>
+<p><strong>22534 SW 114th Pl, Miami FL 33170 (Princeton)</strong></p>
+<ul>
+<li>$449,000 | 4BD/3BA | No HOA | 2020 build</li>
+<li>Near-zero capex but outer south Dade limits rental demand</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>📰 MACRO BULLETS</h3>
+<br>
+<ul>
+<li><strong>30yr rate sub-6%</strong> — Freddie Mac confirms 5.98% milestone. Refinance surge underway. Purchase apps up YoY.</li>
+<li><strong>Miami active inventory: 8,750+ listings</strong> — 9.8 months supply. Seller concessions up. Best leverage window in 3 years.</li>
+<li><strong>FL condo crisis → SFH premium</strong> — Insurance carriers exiting FL condo market. HOA special assessments surging. SFH-first thesis validated further.</li>
+</ul>
+<br>
+<ul>
+<li>Dashboard: <a href="https://tyleradebayo67.github.io/homeydashboard/" target="_blank">https://tyleradebayo67.github.io/homeydashboard/</a></li>
+</ul></div>
+    </div>
+    <div class="rpt-panel" id="panel-2026-02-27">
+      <div class="rpt-panel-header">
+        <button class="back-btn" onclick="closeReport()">← Back to all reports</button>
+        <div class="rpt-panel-date">Friday, February 27, 2026</div>
+      </div>
+      <div class="rpt-panel-body"><h2>🏡 HOMEY DAILY REAL ESTATE REPORT — Friday, February 27, 2026</h2>
+<br>
+<p>📅 Miami + Bay Area Scan | Rate: 5.99% | 3 New Candidates</p>
+<br>
+<hr>
+<br>
+<ul>
+<li><strong>RATE ALERT: 30yr fixed just dropped to 5.98% (Freddie Mac, Feb 26) — FIRST TIME BELOW 6% IN 3+ YEARS.</strong></li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>🏠 Property 1 — TODAY'S TOP PICK ⭐ | Score 50/100</h3>
+<br>
+<p><strong>3560 NW 35th St, Miami FL 33142 (Allapattah)</strong></p>
+<p>🔗 <a href="https://www.redfin.com/FL/Miami/3560-NW-35th-St-33142/home/" target="_blank">https://www.redfin.com/FL/Miami/3560-NW-35th-St-33142/home/</a></p>
+<ul>
+<li>$389,000 | $245/sqft | 3BD/1BA | 1,585 sqft | No HOA</li>
+</ul>
+<br>
+<ul>
+<li>Sharpest ppsf discount today: <strong>$245/sqft vs $381/sqft Allapattah avg = 35.7% below</strong> → max score</li>
+<li>⚠️ Redfin est ~$420K → listed <strong>7.97% BELOW estimate</strong> ✅</li>
+<li>Total monthly: $3,170 | Break-even: $3,337/mo</li>
+<li>Market rent (3BD/1BA): ~$2,600/mo → CF: <strong>-$737/mo NEGATIVE</strong></li>
+<li>🌊 Flood MINIMAL, Fire MINIMAL — rare NW Miami profile</li>
+</ul>
+<br>
+<ul>
+<li>SOUL.md flags Allapattah as up-and-coming (adjacent to Wynwood + Arts District). Single bath limits LTR yield — add a 2nd bath ($15-25K) to unlock 2 deal score tiers and resale upside.</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>🏠 Property 2 | Score 25/100</h3>
+<br>
+<p><strong>1775 NE 147th St, Miami FL 33181 (North Miami - Biscayne)</strong></p>
+<p>🔗 <a href="https://www.zillow.com/homedetails/1775-NE-147th-St-Miami-FL-33181/44135399_zpid/" target="_blank">https://www.zillow.com/homedetails/1775-NE-147th-St-Miami-FL-33181/44135399_zpid/</a></p>
+<ul>
+<li>$679,000 | $276/sqft | 3BD/2BA | 2,455 sqft | No HOA | 0.35-ACRE LOT | AS-IS</li>
+</ul>
+<br>
+<ul>
+<li>Large lot with ADU/subdivision potential</li>
+<li>Total monthly: $5,207 | Market rent: ~$3,400/mo → CF: deeply negative</li>
+<li>Worth watching for big price reduction</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>🏠 Property 3 | Score 20/100</h3>
+<br>
+<p><strong>Bay Area — Mountain View Townhouse</strong></p>
+<ul>
+<li>$1.1M range | Near Google Campus</li>
+<li>Break-even rent far exceeds market; appreciation only play</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>📰 MACRO BULLETS</h3>
+<br>
+<ul>
+<li><strong>Sub-6% rate milestone</strong> — Freddie Mac PMMS 5.98% (Feb 26). Miami Realtors: "First time below 6% since 2022." Buyer demand surge underway.</li>
+<li><strong>Kendall -17.8% YoY</strong> (Redfin) — buyer's market, 80-115 DOM. Entry windows in established gated communities.</li>
+<li><strong>FL Insurance improving</strong> — Miami-Dade avg -13.9% via Citizens Spring 2026 reductions. Stacked with private market cuts, FL SFH holding costs meaningfully lower than 2024.</li>
+</ul>
+<br>
+<ul>
+<li>Dashboard: <a href="https://tyleradebayo67.github.io/homeydashboard/" target="_blank">https://tyleradebayo67.github.io/homeydashboard/</a></li>
+</ul></div>
+    </div>
+    <div class="rpt-panel" id="panel-2026-02-26">
+      <div class="rpt-panel-header">
+        <button class="back-btn" onclick="closeReport()">← Back to all reports</button>
+        <div class="rpt-panel-date">Thursday, February 26, 2026</div>
+      </div>
+      <div class="rpt-panel-body"><h2>🏠 HOMEY DAILY REAL ESTATE SCAN — Thursday, February 26, 2026</h2>
+<br>
+<p>📅 Miami Focus | Rate: 6.05% | 7AM PT</p>
+<br>
+<hr>
+<br>
+<h3>🏠 PROPERTY #1 — INCOME PLAY | Score 40/100</h3>
+<br>
+<p><strong>3049 NW 51st St, Miami FL 33142 (NW Miami / Near Allapattah)</strong></p>
+<p>🔗 <a href="https://www.redfin.com/FL/Miami/3049-NW-51st-St-33142/home/43046512" target="_blank">https://www.redfin.com/FL/Miami/3049-NW-51st-St-33142/home/43046512</a></p>
+<ul>
+<li>$445,000 | $344/sqft | 3BD/2BA | 1,292 sqft | No HOA | Built 1966</li>
+</ul>
+<br>
+<ul>
+<li>Monthly cost: $3,573 | Break-even: $3,761/mo</li>
+<li>🔌 <strong>TWO ON-SITE EFFICIENCIES</strong> — ~$800/mo each</li>
+<li>Main unit only: <strong>-$1,161/mo NEGATIVE</strong></li>
+<li>All units combined (~$4,200/mo): <strong>+$439/mo POSITIVE</strong> ✅</li>
+<li>🌊 Flood MINIMAL | Fire MINIMAL — rare for FL SFH</li>
+<li>Near MIA airport — steady tenant demand year-round</li>
+</ul>
+<br>
+<ul>
+<li>The efficiencies flip this from negative to positive. Low flood/fire risk is the standout. Best for a creative investor. Negotiate to $413K (33142 sells 7% below list avg, 63 DOM).</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>🏠 PROPERTY #2 | Score 28/100 — APPRECIATION ONLY</h3>
+<br>
+<p><strong>18670 SW 123rd Ct, Miami FL 33177 (South Miami Heights)</strong></p>
+<p>🔗 <a href="https://www.redfin.com/FL/Miami/18670-SW-123rd-Ct-33177/home/43220204" target="_blank">https://www.redfin.com/FL/Miami/18670-SW-123rd-Ct-33177/home/43220204</a></p>
+<ul>
+<li>$519,000 | $371/sqft | 3BD/2BA | 1,398 sqft | No HOA | 7,600 sqft lot</li>
+</ul>
+<br>
+<ul>
+<li>Total: $4,086/mo | Break-even: $4,301/mo</li>
+<li>Market rent: ~$2,900/mo → CF: <strong>-$1,186/mo NEGATIVE</strong></li>
+<li>Large lot = future ADU potential, appreciation play</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>🏠 PROPERTY #3 | Score 22/100</h3>
+<br>
+<p><strong>14345 SW 172nd Ln, Miami FL 33177 (South Miami Heights)</strong></p>
+<ul>
+<li>$499,000 | 4BD/3BA | HOA $0 | Built 2022</li>
+<li>Near-zero capex (2022 build) but overpriced at ask for cash flow</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>📰 MACRO BULLETS</h3>
+<br>
+<ul>
+<li><strong>🚨 RATE MILESTONE: 30yr fixed drops to 5.98% (Freddie Mac, Feb 26)</strong> — FIRST TIME BELOW 6% IN 3+ YEARS. Buyer surge signal. Miami's 9.8-month supply is your negotiating window.</li>
+<li><strong>Miami median $602K, -8.4% YoY</strong> — 8,750+ active listings. Buyer leverage still strong sub-$700K.</li>
+<li><strong>FL STR green light</strong> — No statewide ban in 2026. DBPR standardizing licensing. STR viable for standalone SFHs.</li>
+</ul>
+<br>
+<ul>
+<li>Dashboard: <a href="https://tyleradebayo67.github.io/homeydashboard/" target="_blank">https://tyleradebayo67.github.io/homeydashboard/</a></li>
+</ul></div>
+    </div>
+    <div class="rpt-panel" id="panel-2026-02-25">
+      <div class="rpt-panel-header">
+        <button class="back-btn" onclick="closeReport()">← Back to all reports</button>
+        <div class="rpt-panel-date">Wednesday, February 25, 2026</div>
+      </div>
+      <div class="rpt-panel-body"><h2>🏠 HOMEY DAILY REAL ESTATE SCAN — Wednesday, February 25, 2026</h2>
+<br>
+<p>📅 Miami Focus | 25+ listings reviewed | Rate: 6.01%</p>
+<br>
+<hr>
+<br>
+<h3>🏠 #1 — TODAY'S TOP PICK ⭐ | Score 47/100 — WATCH</h3>
+<br>
+<p><strong>5260 SW 2nd St, Coral Gables FL 33134</strong></p>
+<p>🔗 <a href="https://www.redfin.com/FL/Coral-Gables/5260-SW-2nd-St-33134/home/42738780" target="_blank">https://www.redfin.com/FL/Coral-Gables/5260-SW-2nd-St-33134/home/42738780</a></p>
+<ul>
+<li>$559,000 | $352/sqft | 3BD/2BA | 1,586 sqft | 6,000 sqft lot | HOA: $0 | NEW — Listed 1hr ago</li>
+</ul>
+<br>
+<ul>
+<li>$/sqft: 32% BELOW Coral Gables neighborhood avg (~$520/sqft) → 25 pts</li>
+<li>Cash flow: near break-even → 12 pts</li>
+<li>HOA: $0 → 10 pts</li>
+<li>Mortgage P&I: $2,684 | Tax: $466 | Insurance: $699 | Maint/CapEx: $500</li>
+<li><strong>Total Monthly: $4,349</strong> | <strong>Break-even: $4,578/mo</strong></li>
+<li>Redfin Rental Estimate: <strong>$4,495/mo</strong> (post-renovation) → near break-even</li>
+<li>⚠️ AS-IS. Needs new roof + updates. Cash offers only. Budget $50-120K renovation.</li>
+<li>⚠️ Redfin Delta: Listed $8,862 ABOVE estimate ($550,138) → negotiate to $510-525K</li>
+<li>🌊 Climate: ✅ Flood Minimal | ✅ Fire Minimal | ⚠️ Heat Extreme | ⚠️ Wind Extreme</li>
+</ul>
+<br>
+<ul>
+<li>Classic distressed adjacent-to-Coral-Gables play. 32% below neighborhood $/sqft. Best FL climate profile in today's scan — no flood/fire exposure. All-cash buyer scenario: $559K + $80K reno → post-reno cash flow <strong>+$2,830/mo, 5.15% gross yield</strong>.</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>🏠 #2 | Score 43/100</h3>
+<br>
+<p><strong>11535 SW 32nd Ln, Miami FL 33165 (Westchester)</strong></p>
+<p>🔗 <a href="https://www.redfin.com/FL/Miami/11535-SW-32nd-Ln-33165/home/43070477" target="_blank">https://www.redfin.com/FL/Miami/11535-SW-32nd-Ln-33165/home/43070477</a></p>
+<ul>
+<li>$645,000 | $302/sqft | 4BD/3BA | 2,139 sqft | HOA: $27/mo | FULLY RENOVATED</li>
+</ul>
+<br>
+<ul>
+<li>36% below Westchester avg ppsf ($474) — deep discount</li>
+<li>Fully renovated: marble flooring, modern kitchen, hot tub, deck, 1-car garage</li>
+<li><strong>Schools: Royal Palm Elementary 10/10</strong> (0.7mi) — best-in-class</li>
+<li>🔥 TOP 10% Redfin views (78 views, 7 favorites in 10 hours)</li>
+<li>⚠️ Flood SEVERE — 99% chance in 30 years. Mandatory flood insurance: <strong>$650+/mo</strong></li>
+<li>Cash flow without flood insurance: <strong>-$269/mo (near break-even)</strong></li>
+<li>Cash flow WITH flood insurance: <strong>-$919/mo (negative)</strong> — dealbreaker for investors</li>
+</ul>
+<br>
+<ul>
+<li>The most viral listing of today's scan. Stunning renovated home in top school zone. But Flood SEVERE is a dealbreaker for yield investing — flood insurance crushes any cash flow path. Best as a primary residence.</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>🏠 #3 | Score 38/100</h3>
+<br>
+<p><strong>19050 SW 125th Ave, South Miami Heights FL 33177</strong></p>
+<ul>
+<li>$489,000 | 3BD/2BA | No HOA | CF: -$740/mo</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>📰 MACRO BULLETS</h3>
+<br>
+<ul>
+<li><strong>Miami buyer's market deepening</strong> — Kendall -22.4% YoY, avg 115 DOM. Sellers accepting 6% below ask on average.</li>
+<li><strong>CA tax billionaire flight</strong> — Google co-founders (Page + Brin) dubbed "Ken Griffin / Citadel effect" for tech sector. Could trigger broader tech wave to Miami.</li>
+<li><strong>FL insurance improving</strong> — Spring 2026 Citizens reductions active. 73+ rate-decrease filings at FL OIR. Holding costs improving monthly.</li>
+</ul>
+<br>
+<ul>
+<li>Dashboard: <a href="https://tyleradebayo67.github.io/homeydashboard/" target="_blank">https://tyleradebayo67.github.io/homeydashboard/</a></li>
+</ul></div>
+    </div>
+    <div class="rpt-panel" id="panel-2026-02-24">
+      <div class="rpt-panel-header">
+        <button class="back-btn" onclick="closeReport()">← Back to all reports</button>
+        <div class="rpt-panel-date">Tuesday, February 24, 2026</div>
+      </div>
+      <div class="rpt-panel-body"><h2>🏡 HOMEY DAILY REAL ESTATE SCAN — Tuesday, February 24, 2026</h2>
+<br>
+<p>📅 7:00 AM PT | Miami Focus | Rate: 6.01%</p>
+<br>
+<hr>
+<br>
+<h3>🏠 PROPERTY #1 — TOP PICK | Score 72/100 — STRONG BUY ⭐</h3>
+<br>
+<p><strong>9711 Caribbean Blvd, Cutler Bay FL 33189</strong></p>
+<p>🔗 <a href="https://www.redfin.com/FL/Cutler-Bay/9711-Caribbean-Blvd-33189/home/" target="_blank">https://www.redfin.com/FL/Cutler-Bay/9711-Caribbean-Blvd-33189/home/</a></p>
+<ul>
+<li>$580,000 | $297/sqft | 5BD/2BA | 1,954 sqft | No HOA</li>
+</ul>
+<br>
+<ul>
+<li>Price/sqft 25% below Cutler Bay avg ($396) — max score</li>
+<li>Cash flow POSITIVE, zero HOA, minimal flood risk</li>
+<li>Down (20%): $116,000 | Loan: $464,000 @ 6.01%</li>
+<li>Monthly costs: $2,785 P&I + $483 tax + $725 insurance + $300 maint + $200 CapEx = <strong>$4,493/mo</strong></li>
+<li>Break-even (vacancy adj): <strong>$4,730/mo</strong></li>
+<li>Rental comps (Zillow, active): 9426 Caribbean Blvd (SAME STREET) — 5BD/3BA → <strong>$6,500/mo</strong> 🔥</li>
+<li>Avg market rent (conservative 5BD): <strong>$5,200/mo</strong></li>
+<li><strong>Cash flow: +$470/mo ✅ POSITIVE</strong></li>
+<li>🏖️ STR: $275/night × 18 nights = $4,950/mo → STR cash flow: <strong>+$457/mo</strong></li>
+<li>🌊 Climate: Flood Minor | Wind Moderate | Heat Major (inland, NOT canal front)</li>
+</ul>
+<br>
+<ul>
+<li>The same-street comp at $6,500/mo for a nearly identical 5BD is the clearest buy signal in today's scan.</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>🏠 PROPERTY #2 | Score 42/100 — MODERATE</h3>
+<br>
+<p><strong>18451 SW 90th Ave, Miami FL 33157 (Cutler Bay)</strong></p>
+<p>🔗 Redfin search: "18451 SW 90th Ave Miami FL"</p>
+<ul>
+<li>$524,900 | $317/sqft | 4BD/2BA | 1,656 sqft | CANAL FRONT — AS-IS</li>
+</ul>
+<br>
+<ul>
+<li>Price/sqft 20% below avg | Canal front + 15,640 sqft lot | Distressed signal</li>
+<li>Cash flow negative LTR, positive STR post-renovation</li>
+<li>Down (20%): $104,980 | Loan: $419,920 @ 6.01%</li>
+<li>Total monthly: $4,412 | Break-even: $4,644/mo</li>
+<li>Rental comps avg: $3,800/mo → CF: <strong>-$612/mo NEGATIVE (LTR)</strong></li>
+<li>STR post-reno: +$837/mo POSITIVE</li>
+<li>🌊 Flood Major (canal front) — mandatory flood insurance adds ~$500-700/mo</li>
+<li>⚠️ Requires $40-80K renovation</li>
+</ul>
+<br>
+<ul>
+<li>Canal-front lot play for a cash buyer willing to renovate. LTR won't pencil; STR is the only yield path.</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>🏠 PROPERTY #3 | Score 42/100</h3>
+<br>
+<p><strong>15109 SW 71st Ln, Miami FL 33193 (Kendall)</strong></p>
+<ul>
+<li>$660,000 | No HOA | 5BD/3BA + detached 1BD/1BA ADU</li>
+<li>Dual-income potential: main house + ADU</li>
+<li>Total monthly: $5,210 | Market rent all units: ~$5,000/mo → near break-even</li>
+</ul>
+<br>
+<hr>
+<br>
+<h3>📰 MACRO BULLETS</h3>
+<br>
+<ul>
+<li><strong>Miami median now $602K, -8.4% YoY</strong> (Jan 2026, Redfin) — 8,750+ active listings, 9.8 months supply. Deep buyer's market.</li>
+<li><strong>CA billionaire tax → Miami flight confirmed</strong> — Redfin inbound migration data: SF #3 inbound city to Miami. Larry Page, Sergey Brin, Zuckerberg completions tracked.</li>
+<li><strong>30yr rate: 6.01%</strong> (Freddie Mac Feb 19) — down 0.86pts YoY. Lower rates improving yield math gradually.</li>
+</ul>
+<br>
+<ul>
+<li>Dashboard: <a href="https://tyleradebayo67.github.io/homeydashboard/" target="_blank">https://tyleradebayo67.github.io/homeydashboard/</a></li>
+</ul></div>
+    </div>
+</div>
+
+<script>
+function openReport(slug) {
+  document.getElementById('rpt-index').style.display = 'none';
+  document.querySelectorAll('.rpt-panel').forEach(function(p) { p.classList.remove('visible'); });
+  var panel = document.getElementById('panel-' + slug);
+  if (panel) {
+    panel.classList.add('visible');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
+function closeReport() {
+  document.querySelectorAll('.rpt-panel').forEach(function(p) { p.classList.remove('visible'); });
+  document.getElementById('rpt-index').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+// Deep-link: ?report=YYYY-MM-DD
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  var r = params.get('report');
+  if (r) openReport(r);
+})();
+</script>
+</body>
+</html>

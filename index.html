@@ -15,6 +15,13 @@ body { background: var(--bg); color: var(--text); font-family: -apple-system, Bl
 a { color: var(--accent); text-decoration: none; }
 a:hover { text-decoration: underline; }
 
+.top-nav { background: #0a1120; border-bottom: 1px solid var(--border); padding: 10px 32px; display: flex; align-items: center; gap: 20px; }
+.nav-brand { font-size: 1rem; font-weight: 700; color: var(--text); }
+.nav-brand span { color: var(--accent); }
+.nav-link { color: var(--muted); font-size: 0.85rem; font-weight: 500; padding: 4px 12px; border-radius: 6px; transition: background .15s; }
+.nav-link:hover { background: var(--surface2); color: var(--text); text-decoration: none; }
+.nav-link.active { background: var(--surface2); color: var(--text); }
+
 .header { background: var(--surface); border-bottom: 1px solid var(--border); padding: 20px 32px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
 .header-left h1 { font-size: 1.4rem; font-weight: 700; letter-spacing: -0.02em; }
 .header-left h1 span { color: var(--accent); }
@@ -96,10 +103,16 @@ td.small { font-size: 0.75rem; color: var(--muted); }
 </head>
 <body>
 
+<nav class="top-nav">
+  <div class="nav-brand">🏠 <span>Homey</span></div>
+  <a href="index.html"   class="nav-link active">Dashboard</a>
+  <a href="reports.html" class="nav-link">Reports</a>
+</nav>
+
 <div class="header">
   <div class="header-left">
     <h1>&#127968; <span>Homey</span> Investment Dashboard</h1>
-    <div class="header-meta">Updated March 07, 2026 at 07:07 AM &bull; 37 properties tracked</div>
+    <div class="header-meta">Updated March 07, 2026 at 02:19 PM &bull; 37 properties tracked</div>
   </div>
   <div class="header-stats">
     <div class="hstat"><div class="hstat-val" id="stat-positive">0</div><div class="hstat-label">Cash Flow +</div></div>
